@@ -7,3 +7,13 @@
 
 ### spyder 不同于其它 IDE 的地方
 > 刚才我进来的时候，有个小朋友就问我：“你有没有 spyder 的安装包啊？”
+
+## 工具链一览
+
+### ipython/qtconsole
+
+### IDE 核心功能对比
+
+### jupyter
+
+### git

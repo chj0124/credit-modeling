@@ -1,0 +1,21 @@
+#+title: Python 工具链
+
+* 回顾几个核心概念
+** 回顾问题
+** 关于这个仓库
+换成 org
+** spyder 不同于其它 IDE 的地方
+
+#+BEGIN_SRC 
+刚才我进来的时候，有个小朋友就问我：“你有没有 spyder 的安装包啊？”
+#+END_SRC
+
+* 工具链一览
+
+** ipython/qtconsole
+
+** IDE 核心功能对比
+
+** jupyter
+
+** git

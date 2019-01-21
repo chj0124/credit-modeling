@@ -1,1 +1,16 @@
 #+title: 运行 Python 代码的正确姿势
+
+* 工作区的概念
+* 进程的概念
+* Python 模块
+** 模块是什么
+** 模块属性
+** 从其它模块导入内容
+* 运行当前 Python 模块的方式
+** 运行当前面模块
+*** IDE 提供的 gui 按钮及其本质
+*** ipython 魔术命令
+*** 命令行中将模块作为参数运行
+** 运行其它模块
+*** import module_name
+*** from module_name import xxx

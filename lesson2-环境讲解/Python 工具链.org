@@ -1,21 +1,49 @@
 #+title: Python 工具链
 
-* 回顾几个核心概念
+* 关于这个仓库
+如果没有其它人需要编辑这些文件教程文件，我就把 markdown 文件换成 org 了，这样展示起来更加方便，并且可以在展示教程时直接运行 org 文件中的代码。
+
+* 回顾
 ** 回顾问题
-** 关于这个仓库
-换成 org
+*** pip 和 conda 有什么区别
+*** Spyder 和 python 是什么关系
+*** python 和 ipython 有什么区别
+*** python shell 是什么
+*** Rstudio 和 R 是什么关系
+** 为什么要讲这些概念
+如果没有把这些概念分清楚，在网上搜索资料的时候就会使用 "Spyder 如何连接数据库" "Python 怎么分列"之类的关键词，结果当然是一无所获。
 ** spyder 不同于其它 IDE 的地方
+Spyder 本质上是一个用 Python 开发的项目，它也被放到了 PyPi 上，可以使用包管理器来安装。直到今天(2019-01-21)，Spyder 并没有推出 windows 上的二进制安装包，在其它系统上也不是通过安装包来安装，所以如果出现以下场景：
 
 #+BEGIN_SRC 
-刚才我进来的时候，有个小朋友就问我：“你有没有 spyder 的安装包啊？”
+刚才我进来的时候，有个小朋友就问我：“你有没有 Spyder 的安装包啊？”
 #+END_SRC
 
-* 工具链一览
+那基本可以判断这个人要么没用过 Spyder，要么没搞清楚 Spyder 是什么。
 
+* 工具链一览
 ** ipython/qtconsole
+*** 善用 ipython 的补全
+*** ipython 的魔术命令
+**** %magic
+**** %hist
+**** %run
+**** %time
+**** %reset
+*** ipython 中使用 bash 命令
+*** qtconsole 中的图像
 
 ** IDE 核心功能对比
-
-** jupyter
-
+*** 查看 DataFrame
+*** 绘图展示方式
+*** 命名空间
+*** ipython
+*** 补全
+*** 文档查看
+*** 跳转
+*** 语法检查
+*** 切换工作目录
+** jupyter notebook
+*** 启动方式
 ** git
+看本仓库中的 git 教程。

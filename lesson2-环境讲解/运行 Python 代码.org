@@ -1,7 +1,9 @@
 #+title: 运行 Python 代码的正确姿势
 
 * 工作目录的概念
-* 进程的概念
+** 路径操作
+** 工作目录切换
+* 进程
 * Python 模块
 ** 模块是什么
 ** 模块属性
@@ -16,3 +18,5 @@
 *** import module_name
 *** from module_name import xxx
 ** __name__
+
+[[file: "c:/Users/deerain/Dropbox/myNote/machine-learning/imgs/lstm-direct.png"]]

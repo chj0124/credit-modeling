@@ -1,3 +1,8 @@
-# LaTex 公式
+#+title: matplotlib
+* 简介
+** pylab & pyplot
+** 绘图在不同 IDE 中的展示方式
+* 简单绘图
+** 多态
+* LaTex 公式
 
-# pylab & pyplot

@@ -1,0 +1,5 @@
+#+title: Numpy
+
+* Why numpy?
+** numpy ndarry 与 python 原生的 list
+* 

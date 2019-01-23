@@ -1,14 +1,16 @@
 #+title: 准备工作
 
-* 语言
+* DONE 语言
+CLOSED: [2019-01-23 Wed 10:23]
 
 应上峰要求，本轮培训使用 Python 语言。
 
 培训过程中不会有太多时间讲解基本语法，需自行学习。
 
-* 环境
-
-** 安装 Python 解释器
+* DONE 环境 [3/3]
+CLOSED: [2019-01-23 Wed 10:23]
+** DONE 安装 Python 解释器
+CLOSED: [2019-01-23 Wed 10:23]
 
 简略介绍一下各种系统上的 Python 安装方法。有一点需要注意：只用 Python 做科学计算的人直接选择 Python3 就好了，不要听信网上的一些远古教程去用 Python2
 
@@ -36,7 +38,8 @@ MacOS 自带 Python2，想要安装 Python3，比 Windows 还要麻烦。
 
 使用 Linux 的人安个 Python 就不需要教了吧
 
-** 从 PyPi 或 conda 上安装 Python 包
+** DONE 从 PyPi 或 conda 上安装 Python 包
+CLOSED: [2019-01-23 Wed 10:23]
 
 Python 从 3.5 开始自带了 pip 这个包管理器，在命令行里输入 =pip --version= 查看 pip 是否可用。
 
@@ -70,7 +73,8 @@ numpy 是一个比较特殊的包，如果使用的原生 Python，用 pip 安�
 
 如果安装的是 miniconda，那么本地有 pip 和 conda 两个包管理器，推荐用[这个文件](https://github.com/deerainw/credit-modeling/blob/master/lesson1/conda-install.bat)，也可以用上面那个文件
 
-** 安装 IDE
+** DONE 安装 IDE
+CLOSED: [2019-01-23 Wed 10:23]
 
 先解释一下几个关键概念，分清楚什么是 Python，解释器，Python shell，IPython, 包管理器，什么是编辑器，什么是 IDE。
 

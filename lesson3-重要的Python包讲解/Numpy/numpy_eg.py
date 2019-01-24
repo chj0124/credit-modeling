@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name
+
 """
 Numpy 基本操作演示
 -----

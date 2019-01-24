@@ -1,5 +1,97 @@
-#+title: Numpy
+#+TITLE: Numpy
 
-* Why numpy?
-** numpy ndarry 与 python 原生的 list
-* 
+* TODO About this page
+<2019-01-24 Thu>, I tried to use spyder without support of other powerful text editors, as a result, My left hand was painful. so I'm not able to switch my IME between Chinese and English.
+* TODO Why numpy?
+** TODO speed
+numpy is fast!
+** TODO data types
+numpy supports more data types than vallina python.
+** TODO compare with python list
+Numpy reloads some operators, eg:
+#+BEGIN_SRC shell
+  np.linspace(0, 20, 5)
+  Out[28]: array([ 0.,  5., 10., 15., 20.])
+
+  np.linspace(0, 20, 5) * 3
+  Out[29]: array([ 0., 15., 30., 45., 60.])
+
+  list([0, 5, 10, 15, 20])
+  Out[30]: [0, 5, 10, 15, 20]
+
+  list([0, 5, 10, 15, 20]) * 3
+  Out[31]: [0, 5, 10, 15, 20, 0, 5, 10, 15, 20, 0, 5, 10, 15, 20]
+#+END_SRC
+** TODO mathematical Objects
+numpy provides some Objects (vector, matrix, etc) in mathematical sense.
+  - ndarray
+  - matrix
+* TODO matrix
+Numpy matrices are strictly 2-dimensional, while numpy arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, so they inherit all the attributes and methods of ndarrays.
+
+The main advantage of numpy matrices is that they provide a convenient notation for matrix multiplication: if a and b are matrices, then a*b is their matrix product.
+
+eg:
+
+#+BEGIN_SRC python
+  import numpy as np
+
+  m = np.mat('4 3; 2 1')
+  n = np.mat('1 2; 3 4')
+  m * n
+#+END_SRC
+
+#+BEGIN_SRC python
+  import numpy as np
+
+  m = np.array([[4, 3], [2, 1]])
+  n = np.array([[1, 2], [3, 4]])
+  m * n
+  np.dot(m, n)
+#+END_SRC
+
+* TODO ndarray
+** TODO Create a ndarray
+** TODO linear algebra functions
+* TODO dtype
+** TODO two special object
+*** TODO null
+#+BEGIN_SRC python
+  import numpy as np
+  np.nan
+  np.NAN
+  np.NaN
+  np.nan == np.NAN
+  np.nan is np.NaN is np.NAN
+#+END_SRC
+*** TODO infinite
+#+BEGIN_SRC python
+  import numpy as np
+  float('inf')
+  np.Inf
+  np.Inf == float('inf')
+#+END_SRC
+** TODO dtype list
+| index | dtype        |
+|-------+--------------|
+|   1	  |   bool_      |
+|   2	  |   int_       |
+|   3	  |   intc       |
+|   4	  |   intp       |
+|   5	  |   int8       |
+|   6	  |   int16      |
+|   7	  |   int32      |
+|   8	  |   int64      |
+|   9	  |   uint8      |
+|   10  |   uint16     |
+|   11  | 	uint32     |
+|   12  | 	uint64     |
+|   13  | 	float_     |
+|   14  | 	float16    |
+|   15  | 	float32    |
+|   16  | 	float64    |
+|   17  | 	complex_   |
+|   18  | 	complex64  |
+|   19  | 	complex128 |
+* Reference
+- https://wizardforcel.gitbooks.io/ts-numpy-tut/content/3.html

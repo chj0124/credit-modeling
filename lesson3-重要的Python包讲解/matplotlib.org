@@ -1,4 +1,5 @@
 #+title: matplotlib
+
 * 简介
 ** pylab & pyplot
 ** 绘图在不同 IDE 中的展示方式

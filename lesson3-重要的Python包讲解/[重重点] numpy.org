@@ -1,7 +1,7 @@
 #+TITLE: Numpy
 
 * TODO About this page
-<2019-01-24 Thu>, I tried to use spyder without support of other powerful text editors, as a result, My left hand was painful. so I'm not able to switch my IME between Chinese and English.
+<2019-01-24 Thu>, I tried to use spyder without support of other powerful text editors, as a result, my left hand was painful. so I'm not able to switch my IME between Chinese and English.
 * TODO Why numpy?
 ** TODO speed
 numpy is fast!

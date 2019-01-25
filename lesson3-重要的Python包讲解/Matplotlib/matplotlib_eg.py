@@ -6,6 +6,7 @@ matplotlib
 #%% 叙说原初，天地分裂，以虚无赞美开辟，世界撕裂于吾之乖离剑。星云席卷，所谓天上地狱实为创世前夜之终焉。
 import numpy as np
 import matplotlib.pyplot as plt
+
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
 plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 
@@ -36,11 +37,11 @@ Z = R
 ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=plt.get_cmap('rainbow'))
 
 #%% 设置标题
-fig = plt.figure(figsize=[10, 10])
+fig = plt.figure(figsize=[5, 5])
 plt.title("这是标题", fontsize=30, color='red')
 plt.ylabel("这是 y 轴标签", fontsize=20)
 plt.xlabel("这是 x 轴标签", fontsize=15, color='green')
-plt.plot(x, y, 'r*-')
+plt.plot(x, y, 'g--')
 
 #%% 子图
 # make up some data in the interval ]0, 1[
@@ -48,7 +49,7 @@ x = np.linspace(0, 10, 1000)
 y = np.sin(x)
 
 # plot with various axes scales
-plt.figure(figsize=[10, 10])
+plt.figure(figsize=[5, 5])
 
 plt.subplot(221)
 plt.plot(x, y)
@@ -56,6 +57,11 @@ plt.plot(x, y)
 plt.subplot(222)
 plt.plot(y, x, 'g*')
 
+plt.subplot(223)
+plt.plot(y, x, 'b*')
+
+plt.subplot(224)
+plt.plot(y, x, 'y*')
 #%% 标注
 fig = plt.figure()
 fig.suptitle('bold figure suptitle', fontsize=14, fontweight='bold')
@@ -81,7 +87,7 @@ ax.text(0.95, 0.01, 'colored text in axes coords',
 
 
 ax.plot([2], [1], 'o')
-ax.annotate('annotate', xy=(2, 1), xytext=(3, 4),
+ax.annotate('踏实', xy=(2, 1), xytext=(3, 4),
             arrowprops=dict(facecolor='black', shrink=0.05))
 
 ax.axis([0, 10, 0, 10])

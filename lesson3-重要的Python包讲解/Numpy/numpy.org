@@ -1,13 +1,13 @@
 #+TITLE: Numpy
 
-* TODO About this page
+* DONE About this page
 <2019-01-24 Thu>, I tried to use spyder without support of other powerful text editors, as a result, my left hand was painful. so I'm not able to switch my IME between Chinese and English.
-* TODO Why numpy?
-** TODO speed
+* DONE Why numpy?
+** DONE speed
 numpy is fast!
-** TODO data types
+** DONE data types
 numpy supports more data types than vallina python.
-** TODO compare with python list
+** DONE compare with python list
 Numpy reloads some operators, eg:
 #+BEGIN_SRC shell
   np.linspace(0, 20, 5)
@@ -22,11 +22,11 @@ Numpy reloads some operators, eg:
   list([0, 5, 10, 15, 20]) * 3
   Out[31]: [0, 5, 10, 15, 20, 0, 5, 10, 15, 20, 0, 5, 10, 15, 20]
 #+END_SRC
-** TODO mathematical Objects
+** DONE mathematical Objects
 numpy provides some Objects (vector, matrix, etc) in mathematical sense.
   - ndarray
   - matrix
-* TODO matrix
+* DONE matrix
 Numpy matrices are strictly 2-dimensional, while numpy arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, so they inherit all the attributes and methods of ndarrays.
 
 The main advantage of numpy matrices is that they provide a convenient notation for matrix multiplication: if a and b are matrices, then a*b is their matrix product.
@@ -50,12 +50,12 @@ eg:
   np.dot(m, n)
 #+END_SRC
 
-* TODO ndarray
-** TODO Create a ndarray
-** TODO linear algebra functions
-* TODO dtype
-** TODO two special object
-*** TODO null
+* DONE ndarray
+** DONE Create a ndarray
+** DONE linear algebra functions
+* DONE dtype
+** DONE two special object
+*** DONE null
 #+BEGIN_SRC python
   import numpy as np
   np.nan
@@ -64,14 +64,14 @@ eg:
   np.nan == np.NAN
   np.nan is np.NaN is np.NAN
 #+END_SRC
-*** TODO infinite
+*** DONE infinite
 #+BEGIN_SRC python
   import numpy as np
   float('inf')
   np.Inf
   np.Inf == float('inf')
 #+END_SRC
-** TODO dtype list
+** DONE dtype list
 | index | dtype        |
 |-------+--------------|
 |   1	  |   bool_      |
@@ -93,5 +93,5 @@ eg:
 |   17  | 	complex_   |
 |   18  | 	complex64  |
 |   19  | 	complex128 |
-* Reference
+* DONE Reference
 - https://wizardforcel.gitbooks.io/ts-numpy-tut/content/3.html

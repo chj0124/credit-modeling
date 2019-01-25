@@ -26,10 +26,6 @@ np.array([[1, 2], [3, 4]])
 #%% 指定数据类型的二维数组
 np.array([1, 2, 3], dtype=complex)
 
-#%% 多类型二维数组
-x = np.array([(1, 2), (3, 4)], dtype=[('a', '<i4'), ('b', '<i4')])
-print(x['a'])
-
 #%% 快速创建数组
 np.linspace(0, 20, 5)
 

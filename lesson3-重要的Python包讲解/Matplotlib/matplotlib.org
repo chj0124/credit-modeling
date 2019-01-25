@@ -1,0 +1,10 @@
+#+title: matplotlib
+
+* matplotlib 简介
+** 与 numpy 的集成
+** pyplot 与 pylab
+* 中文巨坑
+* 对象
+* 基本绘图类型
+** 折线图
+** 柱状图

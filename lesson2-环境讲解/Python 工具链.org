@@ -21,7 +21,7 @@ Spyder 本质上是一个用 Python 开发的项目，它被放到了 PyPi 上�
 
 那基本可以判断这个人要么没用过 Spyder，要么没搞清楚 Spyder 是什么。
 
-* TODO 工具链 [0/3]
+* TODO 工具链 [0/4]
 ** TODO ipython/qtconsole
 *** 善用 ipython 的补全
 **** Python 关键字
@@ -56,6 +56,7 @@ Spyder 本质上是一个用 Python 开发的项目，它被放到了 PyPi 上�
 *** 启动方式
 *** vim 快捷键
 *** 导出
+** TODO 虚拟环境
 ** git
 看本仓库中的 git 教程。
 

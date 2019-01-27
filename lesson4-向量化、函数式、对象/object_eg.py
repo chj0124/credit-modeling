@@ -3,7 +3,7 @@
 """
 
 
-#%%
+#%%  定义对象
 class Human:
     def __init__(self):
         self.gender = 'male'
@@ -13,6 +13,7 @@ class Human:
         print("大家好，我是 " + self.name)
 
 
-#%%
+#%% 生成实例
 Trump = Human()
 Trump.sum()
+Trump.gender

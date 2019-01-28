@@ -33,22 +33,26 @@ The main advantage of numpy matrices is that they provide a convenient notation 
 
 eg:
 
-#+BEGIN_SRC python
-  import numpy as np
+#+BEGIN_SRC python :results output
+import numpy as np
 
-  m = np.mat('4 3; 2 1')
-  n = np.mat('1 2; 3 4')
-  m * n
+m = np.mat('4 3; 2 1')
+n = np.mat('1 2; 3 4')
+print(m * n)
 #+END_SRC
 
-#+BEGIN_SRC python :results output
-  import numpy as np
+#+RESULTS:
+: [[13 20]
+:  [ 5  8]]
 
-  m = np.array([[4, 3], [2, 1]])
-  n = np.array([[1, 2], [3, 4]])
-  print(m * n)
-  print("\n")
-  print(np.dot(m, n))
+#+BEGIN_SRC python :results output
+import numpy as np
+
+m = np.array([[4, 3], [2, 1]])
+n = np.array([[1, 2], [3, 4]])
+print(m * n)
+print("\n")
+print(np.dot(m, n))
 #+END_SRC
 
 #+RESULTS:

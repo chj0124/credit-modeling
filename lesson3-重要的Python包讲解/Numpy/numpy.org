@@ -41,14 +41,23 @@ eg:
   m * n
 #+END_SRC
 
-#+BEGIN_SRC python
+#+BEGIN_SRC python :results output
   import numpy as np
 
   m = np.array([[4, 3], [2, 1]])
   n = np.array([[1, 2], [3, 4]])
-  m * n
-  np.dot(m, n)
+  print(m * n)
+  print("\n")
+  print(np.dot(m, n))
 #+END_SRC
+
+#+RESULTS:
+: [[4 6]
+:  [6 4]]
+: 
+: 
+: [[13 20]
+:  [ 5  8]]
 
 * DONE ndarray
 ** DONE Create a ndarray

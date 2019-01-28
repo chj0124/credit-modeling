@@ -6,7 +6,13 @@
 ** TODO Series
 ** TODO Index
 ** TODO Interval
-* TODO 创建 DataFrame [/]
+* TODO 创建 DataFrame [0/3]
+** TODO 从字典和列表创建
+** TODO 从 Numpy 矩阵创建
+** TODO 从外部读取 [0/2]
+- [ ] 从文件读取
+- [ ] 从数据库读取
+  
 * TODO DataFrame 的基本增删查改 [/]
 * TODO DataFrame 的基本索引 [/]
 * TODO [#A] DataFrame 的向量化索引 [0/3]

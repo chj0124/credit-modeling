@@ -1,6 +1,6 @@
 #+title: Python 工具链
 
-* TODO 回顾
+* DONE 回顾 [3/3]
 ** DONE 回顾问题
 *** DONE python shell 是什么?
 *** DONE 如何安装 Python 包？

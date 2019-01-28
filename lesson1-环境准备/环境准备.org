@@ -51,7 +51,7 @@ Python 从 3.5 开始自带了 pip 这个包管理器，在命令行里输入 =p
 
 pip 也可以一次性安装多个包：
 
-: pip install pillow maya rpy2 valideer
+: pip install pillow maya valideer
 
 conda 是某个为科学计算定制优化过的 Python 安装包里自带的包管理器，安装 Python 包的方法和 pip 基本一样。
 

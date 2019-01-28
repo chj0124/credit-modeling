@@ -90,4 +90,4 @@ CLOSED: [2019-01-23 Wed 10:23]
 
 Python 的 IDE 有很多种，应上峰要求，本轮培训使用 Spyder 这个 IDE 来示范。
 
-Annaconda 安装后自带 Spyder，也可以使用 `pip install spyder` 或者 `conda install spyder` 来安装 Spyder，之后可以在命令行或 '运行' 里启动 Spyder，建议各位直接安装 Annaconda 全家桶。
+Annaconda 安装后自带 Spyder，也可以使用 =pip install spyder= 或者 =conda install spyder= 来安装 Spyder，之后可以在命令行或 '运行' 里启动 Spyder，建议各位直接安装 Annaconda 全家桶。

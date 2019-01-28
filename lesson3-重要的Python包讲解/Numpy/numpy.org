@@ -27,7 +27,7 @@ numpy provides some Objects (vector, matrix, etc) in mathematical sense.
   - ndarray
   - matrix
 * DONE matrix
-Numpy matrices are strictly 2-dimensional, while numpy arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, so they inherit all the attributes and methods of ndarrays.
+Numpy matrices are strictly 2-dimensional, while numpy arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, So they inherit all the attributes and methods of ndarrays.
 
 The main advantage of numpy matrices is that they provide a convenient notation for matrix multiplication: if a and b are matrices, then a*b is their matrix product.
 

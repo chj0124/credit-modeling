@@ -13,8 +13,8 @@
 - [ ] 从文件读取
 - [ ] 从数据库读取
   
-* TODO DataFrame 的基本增删查改 [/]
 * TODO DataFrame 的基本索引 [/]
+* TODO DataFrame 的基本增删查改 [/]
 * TODO [#A] DataFrame 的向量化索引 [0/3]
 ** TODO 按列值筛选
 ** TODO 多条件筛选

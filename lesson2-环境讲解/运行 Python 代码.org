@@ -1,4 +1,5 @@
 #+title: 运行 Python 代码的正确姿势
+#+OPTIONS: \n:t
 
 * 工作目录的概念
 ** 路径操作

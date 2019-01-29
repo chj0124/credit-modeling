@@ -1,4 +1,5 @@
 #+title: 准备工作
+#+OPTIONS: \n:t
 
 * DONE 语言
 CLOSED: [2019-01-23 Wed 10:23]

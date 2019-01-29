@@ -1,4 +1,5 @@
 #+title: matplotlib
+#+OPTIONS: \n:t
 
 * DONE matplotlib 简介
 ** DONE why matplotlib?

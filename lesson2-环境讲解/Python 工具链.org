@@ -1,4 +1,5 @@
 #+title: Python 工具链
+#+OPTIONS: \n:t
 
 * DONE 回顾 [3/3]
 ** DONE 回顾问题

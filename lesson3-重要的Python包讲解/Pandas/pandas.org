@@ -8,6 +8,24 @@
 ** TODO Interval
 * TODO 创建 DataFrame [0/3]
 ** TODO 从字典和列表创建
+#+begin_src python :results output
+import pandas as pd
+
+school = {
+    "name": ["Trump", "Kevin", "Tony"],
+    "age": [18, 30, 66]
+}
+
+school_info = pd.DataFrame(school)
+print(school_info)
+#+end_src
+
+#+RESULTS:
+:     name  age
+: 0  Trump   18
+: 1  Kevin   30
+: 2   Tony   66
+
 ** TODO 从 Numpy 矩阵创建
 ** TODO 从外部读取 [0/2]
 - [ ] 从文件读取

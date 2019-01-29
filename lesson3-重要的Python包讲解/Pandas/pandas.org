@@ -27,6 +27,22 @@ print(school_info)
 : 2   Tony   66
 
 ** TODO 从 Numpy 矩阵创建
+#+begin_src python :results output
+import pandas as pd
+import numpy as np
+
+x = np.random.rand(3, 3)
+col_name = ["x1", "x2", "x3"]
+df1 = pd.DataFrame(data=x, columns=col_name)
+print(df1)
+#+end_src
+
+#+RESULTS:
+:          x1        x2        x3
+: 0  0.432383  0.110585  0.887397
+: 1  0.452030  0.685591  0.440120
+: 2  0.427322  0.806993  0.374641
+
 ** TODO 从外部读取 [0/2]
 - [ ] 从文件读取
 - [ ] 从数据库读取

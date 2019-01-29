@@ -21,5 +21,5 @@ plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
 * DONE 标注
 ** TODO 标题
 ** TODO xlabel, ylabel
-** TODO annatation
+** TODO annotation
 ** TODO latex 公式标注

@@ -44,9 +44,8 @@ print(df1)
 : 2  0.427322  0.806993  0.374641
 
 ** TODO 从外部读取 [0/2]
-- [ ] 从文件读取
-- [ ] 从数据库读取
-  
+*** TODO 从文件读取
+*** TODO 从数据库读取
 * TODO DataFrame 的基本索引 [/]
 * TODO DataFrame 的基本增删查改 [/]
 * TODO [#A] DataFrame 的向量化索引 [0/3]

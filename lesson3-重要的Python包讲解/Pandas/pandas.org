@@ -48,6 +48,11 @@ print(df1)
 - [ ] 从数据库读取
   
 * TODO DataFrame 的基本索引 [/]
+** 按列名索引
+: df1['x1']
+** 按多个列名索引
+: df1.ix[:, ['x1', 'x2']]
+
 * TODO DataFrame 的基本增删查改 [/]
 * TODO [#A] DataFrame 的向量化索引 [0/3]
 ** TODO 按列值筛选

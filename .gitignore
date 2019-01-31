@@ -1,3 +1,4 @@
 .spyproject/
 .idea/
 test.py
+.ipynb_checkpoints/

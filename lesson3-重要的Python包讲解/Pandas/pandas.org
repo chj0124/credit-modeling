@@ -1,11 +1,12 @@
 #+TITLE: Pandas
 #+OPTIONS: \n:t
 
-* TODO Pandas 提供的对象 [0/4]
+* TODO Pandas 提供的对象 [0/5]
 ** TODO DataFrame
 ** TODO Series
-** TODO Index
 ** TODO Interval
+** TODO Index
+** TODO Panel
 * TODO 创建 DataFrame [0/3]
 ** TODO 从字典和列表创建
 #+begin_src python :results output
@@ -46,19 +47,34 @@ print(df1)
 ** TODO 从外部读取 [0/2]
 *** TODO 从文件读取
 *** TODO 从数据库读取
-* TODO DataFrame 的基本索引 [/]
-** 按列名索引
-: df1['x1']
-** 按多个列名索引
-: df1.ix[:, ['x1', 'x2']]
+* TODO DataFrame 的基本索引 [0/5]
+DataFrame 的索引形式灵活，可以写出很多种形式，但是除了向量化索引之外，基本只用记三种形式：
 
-* TODO DataFrame 的基本增删查改 [/]
+1. df['age']
+1. df.loc()
+1. df.iloc()
+
+** TODO 按列名索引
+: df1['x1']
+** TODO 按多个列名索引
+: df1[['x1', 'x2']]
+** TODO 按连续的列名索引
+: df1['x1':'x4']
+** TODO 按行列的数字索引
+建议直接使用 .iloc 类方法，不要考虑其他形式。
+
+有一个小坑。
+
+: df1.iloc[3, 4]
+
+** TODO iloc & loc
+
 * TODO [#A] DataFrame 的向量化索引 [0/3]
 ** TODO 按列值筛选
 ** TODO 多条件筛选
 *** 连续筛选
 *** 布尔序列运算
-** TODO 筛选任意一种 Index
+** TODO 筛选任意一种 Index 或 Series
 * TODO [#C] pandasql
 pandasql 目前不支持中文，所以实用价值大打折扣。
 

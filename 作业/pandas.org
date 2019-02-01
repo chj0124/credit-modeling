@@ -15,7 +15,8 @@
 ** 写入 Excel
 将 df_train，df_test，df_survive 的内容写入一个 excel 文件的三个 sheet，该 Excel 文件命名为 titanic.xlsx
 
-* lh
+* 作业展示
+** lh
 #+begin_src python :results output
 import pandas as pd
 import numpy as np

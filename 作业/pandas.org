@@ -1,0 +1,16 @@
+#+TITLE: Pandas 作业
+#+OPTIONS: \n:t
+
+* 任务列表
+** 读取
+1. 将 train.csv 读取为一个 DataFrame，命名为 df_train
+2. 同样读取 test.csv 与 gender_submission.csv，命名为 df_test 与 df_survive
+** 索引
+1. 筛选出 df_train 中 (年龄大于 30 岁的女性) 或 (姓名为空的人)
+2. 筛选出 df_train 中所有包含空值且数据类型为数值型的列的列名
+3. 筛选出方差最大的数值列的列名
+** 拼接
+1. 使用 =pd.merge()= 函数，将 df_test 与 df_suvive 根据 PassengerId 进行匹配连接，形成 df_test2
+2. 使用 =pd.concat()= 函数，将 df_train 与 df_test2 拼接在一起
+** 写入 Excel
+将 df_train，df_test，df_survive 的内容写入一个 excel 文件的三个 sheet，该 Excel 文件命名为 titanic.xlsx

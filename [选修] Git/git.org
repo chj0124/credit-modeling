@@ -1,4 +1,4 @@
-#+title: Git 简短学习笔记
+#+title: Git
 #+OPTIONS: \n:t num:t
 
 * Git 中的重要概念

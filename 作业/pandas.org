@@ -1,0 +1,53 @@
+#+TITLE: Pandas 作业
+#+OPTIONS: \n:t
+
+* 任务列表
+** 读取
+1. 将 train.csv 读取为一个 DataFrame，命名为 df_train
+2. 同样读取 test.csv 与 gender_submission.csv，命名为 df_test 与 df_survive
+** 索引
+1. 筛选出 df_train 中 (年龄大于 30 岁的女性) 或 (姓名为空的人)
+2. 筛选出 df_train 中所有包含空值且数据类型为数值型的列的列名
+3. 筛选出 df_train 中方差最大的数值列的列名
+** 拼接
+1. 使用 =pd.merge()= 函数，将 df_test 与 df_suvive 根据 PassengerId 进行匹配连接，形成 df_test2
+2. 使用 =pd.concat()= 函数，将 df_train 与 df_test2 拼接在一起
+** 写入 Excel
+将 df_train，df_test，df_survive 的内容写入一个 excel 文件的三个 sheet，该 Excel 文件命名为 titanic.xlsx
+
+* 作业展示
+** lh
+#+begin_src python :results output
+import pandas as pd
+import numpy as np
+
+# Create df with np
+x=np.random.rand(3,3)
+col_name=["x1","x2","x3"]
+pd.DataFrame(x,columns=col_name)
+
+# read
+data1=pd.read_csv(r"./learn_data/lesson3.csv")
+data1_col=data1.columns
+group1=data1.shape#矩阵数据的行、列数
+a1=data1.iloc[:,0:1]
+a2=data1.iloc[:,1:2]
+a3=data1.loc[:,["Age"]]#选取年龄列
+b1=pd.isnull(data1["Age"])#年龄为空值的布尔数组
+a4=data1.loc[:,["Sex"]]#选取性别列
+b2=pd.isnull(data1["Sex"])#性别为空值的布尔数组
+
+#条件
+data2=data1[data1["Sex"]=="female"]#条件选取性别为女的矩阵数据
+group2=data2.shape
+data3=data2[data2["Survived"]==1]#条件选取性别为女且生存的矩阵数据
+group3=data3.shape
+
+#多条件
+data4=data1[(data1["Age"]>40)&(data1["Sex"]=="female")]#条件选取年龄大于40且性别为女的矩阵数据
+group4=data4.shape
+
+#姓名为空
+data5=1*pd.isnull(data1["Name"]).sum()#计算name出现空值的个数
+data6=(1*pd.isnull(data1)).sum()#输出每列出现空值的次数
+#+end_src

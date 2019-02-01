@@ -1,14 +1,19 @@
 #+TITLE: Pandas
 #+OPTIONS: \n:t
 
-* TODO Pandas 提供的对象 [0/5]
-** TODO DataFrame
-** TODO Series
+* DONE Pandas 提供的对象 [2/5]
+CLOSED: [2019-01-31 周四 17:04]
+** DONE DataFrame
+CLOSED: [2019-01-31 周四 16:19]
+** DONE Series
+CLOSED: [2019-01-31 周四 16:21]
 ** TODO Interval
 ** TODO Index
 ** TODO Panel
-* TODO 创建 DataFrame [0/3]
-** TODO 从字典和列表创建
+* DONE 创建 DataFrame [2/3]
+CLOSED: [2019-01-31 周四 17:04]
+** DONE 从字典和列表创建
+CLOSED: [2019-01-31 周四 16:29]
 #+begin_src python :results output
 import pandas as pd
 
@@ -27,7 +32,8 @@ print(school_info)
 : 1  Kevin   30
 : 2   Tony   66
 
-** TODO 从 Numpy 矩阵创建
+** DONE 从 Numpy 矩阵创建
+CLOSED: [2019-01-31 周四 16:25]
 #+begin_src python :results output
 import pandas as pd
 import numpy as np
@@ -44,37 +50,49 @@ print(df1)
 : 1  0.452030  0.685591  0.440120
 : 2  0.427322  0.806993  0.374641
 
-** TODO 从外部读取 [0/2]
-*** TODO 从文件读取
+** TODO 从外部读取 [1/2]
+*** DONE 从文件读取
+CLOSED: [2019-01-31 周四 16:33]
 *** TODO 从数据库读取
-* TODO DataFrame 的基本索引 [0/5]
+* DONE DataFrame 的基本索引 [5/5]
+CLOSED: [2019-01-31 周四 16:41]
 DataFrame 的索引形式灵活，可以写出很多种形式，但是除了向量化索引之外，基本只用记三种形式：
 
 1. df['age']
 1. df.loc()
 1. df.iloc()
 
-** TODO 按列名索引
+** DONE 按列名索引
+CLOSED: [2019-01-31 周四 16:41]
 : df1['x1']
-** TODO 按多个列名索引
+** DONE 按多个列名索引
+CLOSED: [2019-01-31 周四 16:41]
 : df1[['x1', 'x2']]
-** TODO 按连续的列名索引
+** DONE 按连续的列名索引
+CLOSED: [2019-01-31 周四 16:44]
 : df1['x1':'x4']
-** TODO 按行列的数字索引
+** DONE 按行列的数字索引
+CLOSED: [2019-01-31 周四 16:41]
 建议直接使用 .iloc 类方法，不要考虑其他形式。
 
 有一个小坑。
 
 : df1.iloc[3, 4]
 
-** TODO iloc & loc
+** DONE iloc & loc
+CLOSED: [2019-01-31 周四 16:41]
 
-* TODO [#A] DataFrame 的向量化索引 [0/3]
-** TODO 按列值筛选
-** TODO 多条件筛选
+* DONE [#A] DataFrame 的向量化索引 [3/3]
+CLOSED: [2019-01-31 周四 17:01]
+** DONE 按列值筛选
+CLOSED: [2019-01-31 周四 16:56]
+** DONE 多条件筛选
+CLOSED: [2019-01-31 周四 16:56]
 *** 连续筛选
 *** 布尔序列运算
-** TODO 筛选任意一种 Index 或 Series
-* TODO [#C] pandasql
+** DONE 筛选任意一种 Index 或 Series
+CLOSED: [2019-01-31 周四 17:01]
+* DONE [#C] pandasql
+CLOSED: [2019-01-31 周四 17:04]
 pandasql 目前不支持中文，所以实用价值大打折扣。
 

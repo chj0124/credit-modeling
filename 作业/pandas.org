@@ -51,3 +51,34 @@ group4=data4.shape
 data5=1*pd.isnull(data1["Name"]).sum()#计算name出现空值的个数
 data6=(1*pd.isnull(data1)).sum()#输出每列出现空值的次数
 #+end_src
+** zyw
+#+begin_src python
+import pandas as pd
+import numpy as np
+
+# 读取
+df_train = pd.read_csv(r"./raw_data/train.csv")
+
+df_test = pd.read_csv(r"./raw_data/test.csv")
+
+df_survive = pd.read_csv(r"./raw_data/gender_submission.csv")
+
+# 索引
+df_train[((df_train["Age"]>30)&(df_train["Sex"]=="female"))|pd.isnull(df_train["Name"])]
+
+df_train.columns[((1*pd.isnull(df_train)).sum()>0)&(1*((df_train.dtypes == "int64")|(df_train.dtypes == "float64"))>0)]
+
+print(np.argmax(np.var(df_train),axis = 0))
+
+# 拼接
+df_test2 = pd.merge(df_survive, df_test, on = 'PassengerId')
+
+df_all = pd.concat([df_train, df_test2], axis = 0)
+
+# 写入Excel
+writer = pd.ExcelWriter(r"./raw_data/titanic.xlsx")
+df_train.to_excel(writer,'Sheet1')
+df_test.to_excel(writer,'Sheet2')
+df_survive.to_excel(writer,'Sheet3')
+writer.save()
+#+end_src

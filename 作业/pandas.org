@@ -82,3 +82,38 @@ df_test.to_excel(writer,'Sheet2')
 df_survive.to_excel(writer,'Sheet3')
 writer.save()
 #+end_src
+** cfq
+#+begin_src python
+import pandas as pd
+import numpy as np
+x=np.random.rand(3,3)  #生成3*3随即矩阵
+col_name=["x1","x2","x3"]  #创建列名
+pd.DataFrame(x,columns=col_name)  #creat df with numpy
+
+import os
+os.getcwd()
+df1=pd.read_csv(r"./raw_data/lesson3.csv")
+df1.columns
+
+##索引
+df1['Age']  #列名为Age
+df1["Age"] ####疑问：单引号与双引号使用方式有啥区别？？？？试过两者的运行结果一致,是否表示无区别
+df1.iloc[:,:]  #所有行所有列
+df1.iloc[3:7,0:4]  #3-6行，1-3列
+df1.loc[:,"Name":"Age"]  #Name:Age的连续列
+df1.loc[:,["Age","Name"]]  #列名为Age和Name
+
+##加条件索引
+df1[df1["Age"]>30]  #方括号[]代表索引,去掉[]将产生布尔向量
+
+#例如：
+df1["Age"]>30  #生产布尔向量True/False
+
+##与&，或|，非！
+df1[(df1["Age"]>30)&(df1["Sex"]=="female")]  #注意区分大小写
+pd.isnull(df1["Age"])  ####Age为空值的布尔向量
+
+
+(1*pd.isnull(df1["Age"])).sum()  #得出多少个空值
+df1.columns[(1*pd.isnull(df1)).sum()>0] #索引出哪几列有空值
+#+end_src

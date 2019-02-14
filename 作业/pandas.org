@@ -117,3 +117,29 @@ pd.isnull(df1["Age"])  ####Age为空值的布尔向量
 (1*pd.isnull(df1["Age"])).sum()  #得出多少个空值
 df1.columns[(1*pd.isnull(df1)).sum()>0] #索引出哪几列有空值
 #+end_src
+** dxp
+#+begin_src python
+import pandas as pd
+import numpy as np
+
+# 读取
+df_train = pd.read_csv(r"C:/Users/Administrator/raw_data/train.csv")
+df_test = pd.read_csv(r"C:/Users/Administrator/raw_data/test.csv")
+df_survive = pd.read_csv(r"C:/Users/Administrator/raw_data/gender_submission.csv")
+
+# 索引
+df_train[((df_train["Age"]>30)&(df_train["Sex"] == "Female"))|pd.isnull(df_train["Age"])]  #年龄大于30的女性或姓名为空的人
+df_train.columns[((1*pd.isnull(df_train)).sum()>0)&(1*((df_train.dtypes == "int64")|(df_train.dtypes == "float64"))>0)] #所有包含空值且数据类型为数值型的列的列名
+print(np.argmax(np.var(df_train),axis=0))  #方差最大的数值列的列名
+
+#拼接
+df_test2=pd.merge(df_test,df_survive,on = 'PassengerId') #将 df_test 与 df_suvive 根据 PassengerId 进行匹配连接，形成 df_test2
+df_test3=pd.concat([df_train,df_test2],axis = 0)   #将 df_train 与 df_test2 拼接在一起
+
+#写入EXCEL
+excel = pd.ExcelWriter(r"C:/Users/Administrator/raw_data/titanic.xlsx")
+df_train.to_excel(excel,'Sheet1')
+df_test.to_excel(excel,'Sheet2')
+df_survive.to_excel(excel,'Sheet3')
+excel.save()
+#+end_src

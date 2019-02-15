@@ -143,3 +143,7 @@ df_test.to_excel(excel,'Sheet2')
 df_survive.to_excel(excel,'Sheet3')
 excel.save()
 #+end_src
+** hyq
+#+begin_quote
+把培训现场的内容自己练习了一遍
+#+end_quote

@@ -147,6 +147,48 @@ excel.save()
 #+begin_quote
 把培训现场的内容自己练习了一遍
 #+end_quote
+** glp
+#+begin_src python
+import numpy as np
+import pandas as pd
+
+ 
+#定义路径IO
+IO = 'lessonother.xlsx'
+#读取excel文件
+df_lessonother = pd.read_excel(io=IO)
+#此处由于sheetname默认是0，所以返回第一个表
+print(df_lessonother)
+
+#读取csv
+df_lesson=pd.read_csv(r"C:\Administrator\Desktop\lesson3.csv")
+print(df_lesson)
+
+# 创建列表
+x=np.random.rand(4,4)
+col_name=["l1","l2","l3","l4"]
+print(pd.DataFrame(x,columns=col_name))
+
+#创建字典
+x2={'name':["Mike","Bob","Alice"],"age":[34,35,45]}
+print(pd.DataFrame(x2))
+
+#索引
+df_lesson.columns
+df_lesson['Age']
+
+print(df_lesson.iloc[:,[0,3]])
+
+#求年龄不为空的
+1*pd.notnull(df_lesson['Age'])
+
+#有空值的列
+df_lesson.columns[(1*pd.isnull(df_lesson)).sum()>0]
+
+
+#&与的关系
+df_lesson[(df_lesson["Age"]>0)&(df_lesson["Sex"]=="female")] 
+#+end_src
 ** lb
 #+begin_src python
 import pandas as pd

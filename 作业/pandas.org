@@ -321,3 +321,44 @@ df_test.to_excel(excel,'Sheet2')
 df_survive.to_excel(excel,'Sheet3')
 excel.save()
 #+end_src
+** wjk
+#+begin_src python
+import pandas as pd
+import numpy as np#读取EXCEL
+df_train = pd.read_csv('F:\\py\\train.csv')
+df_survive = pd.read_csv('F:\\py\\gender_submission.csv')
+df_test = pd.read_csv('F:\\py\\test.csv')
+
+print(df_train.columns)
+print(df_train["Sex"])
+df_train.describe()
+
+# 筛选年龄30岁以上的筛选出 df_train 中 (年龄大于 30 岁的女性) 或 (姓名为空的人)
+((df_train["Age"] > 30) & (df_train["Sex"] == "female"))|(pd.isnull(df_train["Name"]))
+print(df_train[((df_train["Age"] > 30) & (df_train["Sex"] == "female"))|(pd.isnull(df_train["Name"]))])
+
+# 筛选出 df_train 中所有包含空值且数据类型为数值型的列的列名
+print(df_train.columns[pd.isnull(df_train).sum()>0])
+
+# 筛选出 df_train 中方差最大的数值列的列名
+print(df_train.describe().columns[df_train.describe().loc["std",:] == df_train.describe().loc["std",:].max()])
+
+print(np.argmax(np.var(df_train),axis = 0)) #np.var 求方差  np.argmax 求最大值索引
+
+print(df_train.var().argmax())
+
+# 使用 pd.merge() 函数，将 df_test 与 df_suvive 根据 PassengerId 进行匹配连接，形成 df_test2
+df_test2 = pd.merge(df_test,df_survive, on = "PassengerId")
+print(df_test2)
+
+#使用 pd.concat() 函数，将 df_train 与 df_test2 拼接在一起
+df_test3 = pd.concat([df_train,df_test2])
+print(df_test3)
+
+#将 df_train，df_test，df_survive 的内容写入一个 excel 文件的三个 sheet，该 Excel 文件命名为 titanic.xlsx
+writer = pd.ExcelWriter('F:\\py\\titanic.xlsx')
+df_train.to_excel(writer,'Sheet1')
+df_test.to_excel(writer,'Sheet2')
+df_survive.to_excel(writer,'Sheet3')
+writer.save()
+#+end_src

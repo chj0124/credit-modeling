@@ -228,3 +228,96 @@ df_test.to_excel(write,sheet_name="sheet2",index=False)
 df_survive.to_excel(write,sheet_name="sheet3",index=False)
 write.save()
 #+end_src
+** xlj
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 18 16:43:48 2019
+
+@author: xulingjie
+
+lesson 3 runsheng's assignment
+"""
+
+import pandas as pd
+
+# 读取
+df_train = pd.read_csv('E://部门培训 python//lesson 3//train.csv', engine = 'python')
+df_train = df_train.rename(columns = {'锘縋assengerId':'PassengerId'})
+
+df_test = pd.read_csv('E://部门培训 python//lesson 3//test.csv', engine = 'python')
+df_test = df_test.rename(columns = {'锘縋assengerId':'PassengerId'})
+
+df_survive = pd.read_csv('E://部门培训 python//lesson 3//gender_submission.csv', engine = 'python')
+df_survive = df_survive.rename(columns = {'锘縋assengerId':'PassengerId'})
+
+# 索引
+s11 = df_train['Age'] > 30
+s12 = df_train['Sex'] == 'female'
+s13 = pd.isnull(df_train['Name'])
+df_sele1 = df_train[(s11 & s12) | s13]
+
+ColNo = len(df_train.columns)
+for i in list(range(0, ColNo)):
+    print(pd.isnull(df_train.iloc[:, i]).value_counts())
+    print(df_train.iloc[:, i].dtypes)
+    print('----------------------------------------')
+
+#结果是Age
+    
+df_sele3 = df_train.describe()
+#Fare
+
+# 拼接
+df_test2 = pd.merge(df_test, df_survive, how = 'outer' ,on= 'PassengerId')
+
+df_nothing = pd.concat([df_train, df_test2])
+
+# 写入
+writer = pd.ExcelWriter('E:\\部门培训 python\\lesson 3\\titanic.xlsx', engine = 'openpyxl')
+
+df_train.to_excel(excel_writer = writer, sheet_name = 'df_train')
+df_test.to_excel(excel_writer = writer, sheet_name = 'df_test')
+df_survive.to_excel(excel_writer = writer, sheet_name = 'df_survive')
+
+writer.save()
+writer.close()
+#+end_src
+** wt
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 18 10:11:07 2019
+
+@author: a4496
+"""
+import numpy as np
+import pandas as pd
+import os
+import openpyxl
+#获取当前工作路径
+os.getcwd()
+#设置课程三的工作路径
+os.chdir('C:\\wuting\\study\\python\\翱翔者计划\\lesson3\\credit-modeling-master\\lesson3-重要的Python包讲解\\Pandas\\raw_data')
+#读取作业的数据文件
+df_train = pd.read_csv('train.csv')
+df_test = pd.read_csv('test.csv')
+df_survive = pd.read_csv('gender_submission.csv')
+#数据筛选
+df_train_choice1 = df_train[((df_train["Age"]>30)&(df_train["Sex"]=='female'))|(pd.isnull(df_train['Name']))]
+df_train_choice2 = df_train.columns[((1*pd.isnull(df_train).sum())>0)&(df_train.dtypes == 'float')]
+print(df_train_choice2)
+df_train_choice3 = np.var(df_train)
+print(df_train_choice3)
+df_train_choice4 = df_train_choice3.idxmax()
+print(df_train_choice4)
+#数据拼接
+df_test2 = pd.merge(df_test,df_survive,how='left', on='PassengerId')
+df_test3 = pd.concat([df_train,df_test2])
+#数据导出
+excel = pd.ExcelWriter("c:/wuting/titanic.xlsx")
+df_train.to_excel(excel,'Sheet1')
+df_test.to_excel(excel,'Sheet2')
+df_survive.to_excel(excel,'Sheet3')
+excel.save()
+#+end_src

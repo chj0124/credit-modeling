@@ -2,6 +2,20 @@
 
 * 定义函数的两种方法
 ** def
+#+begin_src python :results output
+def yuan_xiao():
+    """
+    翱翔者计划专用函数
+    """
+    print("元宵节快乐")
+
+
+yuan_xiao()
+#+end_src
+
+#+RESULTS:
+: 元宵节快乐
+
 ** lambda
 * 函数式编程
 ** map()

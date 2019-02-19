@@ -1,0 +1,11 @@
+#+TITLE: 函数与函数式编程
+
+* 定义函数的两种方法
+** def
+** lambda
+* 函数式编程
+** map()
+** functools 模块
+*** reduce
+*** partial
+** DataFrame 的函数式类方法

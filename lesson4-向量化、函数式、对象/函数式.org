@@ -3,23 +3,35 @@
 * 定义函数的两种方法
 ** def
 #+begin_src python :results output
-def yuan_xiao():
+def yuan_xiao(x, y):
     """
     翱翔者计划专用函数
     """
-    print("元宵节快乐")
+    print(x**2 + y)
 
-
-yuan_xiao()
+yuan_xiao(x=3)
 #+end_src
 
 #+RESULTS:
-: 元宵节快乐
+: 71
 
 ** lambda
+#+begin_src python :results output
+x = [1, 2, 3, 4]
+y = [3, 5, 5, 2]
+
+print(list(map(ft.partial(yuan_xiao, z=3), x, y)))
+#+end_src
+
+#+RESULTS:
+: [3, 10, 15, 8]
+
 * 函数式编程
 ** map()
 ** functools 模块
 *** reduce
+#+begin_src python
+import functools as ft
+#+end_src
 *** partial
 ** DataFrame 的函数式类方法

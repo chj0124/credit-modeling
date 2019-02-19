@@ -362,3 +362,17 @@ df_test.to_excel(writer,'Sheet2')
 df_survive.to_excel(writer,'Sheet3')
 writer.save()
 #+end_src
+** xy
+#+begin_src python
+import pandas as pd 
+import numpy as np
+from sklearn.preprocessing import Imputer
+df = pd.read_excel ( r"D:/lesson.xlsx" )
+df['relationship'] = df['SibSp'] + df['Parch']
+df.isnull().sum()
+df.dropna(subset = ['Sex'])
+df.dropna(subset = ['relationship'])
+df1 = df['Age']
+imp1 = Imputer(missing_values='NaN',strategy='mean',axis=1)
+df
+#+end_src

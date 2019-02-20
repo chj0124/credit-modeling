@@ -127,6 +127,10 @@ def f(a_list, find="max"):
     :param a_list: 一个列表，列表内的元素全为数值
     :param find: 一个字符串，用来控制函数的功能是寻找最大值还是最小值，合法取值为 "max"，"min"
     :return: a_list 中的最大值或最小值
+    -----
+    Example
+    >>> m = [1, 2, 3]
+    >>> f(m, find="min")
     """
     if find == "max":
         return max(a_list)

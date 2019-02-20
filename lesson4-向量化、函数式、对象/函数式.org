@@ -155,7 +155,8 @@ print("最小值", result)
 
 很多函数是由三方包提供的，使用时需要修改某些参数，partial() 可以让我们在 map() 的时候给这些参数赋值。
 
-** DataFrame 的函数式类方法
+** DataFrame 的函数式类方法(重要)
+
 DataFrame 对象提供了一个 .apply() 类方法，可以把某个函数映射到某一列或整个 DataFrame 上。
 
 把一个函数应用到某一列上：

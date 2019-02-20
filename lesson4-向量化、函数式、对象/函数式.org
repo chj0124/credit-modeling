@@ -116,7 +116,7 @@ print(result)
 reduce 有比较广泛的应用，比如在根据同一个主键连接匹配多个 DataFrame 时，使用 reduce 函数可以避免写很多个 pd.merge() 语句。
 
 *** partial()
-partial() 的本质是强行给一个函数中的某些参数赋默认值来形成一个新的函数。
+partial() 的本质是给一个函数中的某些参数赋默认值来形成一个新的函数。
 #+begin_src python :results output
 import functools as ft
 

@@ -82,7 +82,3 @@ CLOSED: [2019-01-31 周四 16:41]
 ** DONE iloc & loc
 CLOSED: [2019-01-31 周四 16:41]
 
-* DONE [#C] pandasql
-CLOSED: [2019-01-31 周四 17:04]
-pandasql 目前不支持中文，所以实用价值大打折扣。
-

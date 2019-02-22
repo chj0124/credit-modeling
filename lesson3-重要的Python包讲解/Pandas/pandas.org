@@ -82,16 +82,6 @@ CLOSED: [2019-01-31 周四 16:41]
 ** DONE iloc & loc
 CLOSED: [2019-01-31 周四 16:41]
 
-* DONE [#A] DataFrame 的向量化索引 [3/3]
-CLOSED: [2019-01-31 周四 17:01]
-** DONE 按列值筛选
-CLOSED: [2019-01-31 周四 16:56]
-** DONE 多条件筛选
-CLOSED: [2019-01-31 周四 16:56]
-*** 连续筛选
-*** 布尔序列运算
-** DONE 筛选任意一种 Index 或 Series
-CLOSED: [2019-01-31 周四 17:01]
 * DONE [#C] pandasql
 CLOSED: [2019-01-31 周四 17:04]
 pandasql 目前不支持中文，所以实用价值大打折扣。

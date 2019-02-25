@@ -43,7 +43,7 @@ RESULTS:
 
 #+begin_src python :results output
 x = "en taro adun"
-print(x.__add__(998))
+print(x.__add__(998))  # 会报错，因为字符对象是没有 __add__() 这个类方法的
 #+end_src
 
 ** python 中模块和包是对象

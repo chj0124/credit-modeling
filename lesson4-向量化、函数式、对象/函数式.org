@@ -168,3 +168,48 @@ DataFrame 对象提供了一个 .apply() 类方法，可以把某个函数映射
 
 把一个函数应用到整个 DataFrame 上：
 : df.apply(a_function, axis=1)  # 根据 axis 的值，每次隐式迭代某一行或某一列。axis=0 代表行，axis=1 代表列
+
+** 递归函数
+举一个被举烂了的例子：求一个数的阶乘 n!
+
+如果用 python 写成循环的形式，大概会长这样：
+
+#+begin_src python :results output
+n = 4
+result = 1
+for i in range(n):
+    result *= (i+1)
+    
+print(result)
+#+end_src
+
+RESULTS:
+: 24
+
+如果写一个循环来完成这个任务，想要动态改变 n 的值就不那么方便，并且这个循环过程的可复用性也差。想要把这个计算阶乘的过程写成一个函数，就要使用名为递归的技巧。
+
+函数式特性最强的 Haskell 语言中实现递归函数非常方便简单，因为 Haskell 中的高阶函数本来就带有递归呼叫的特性，Haskell 实现阶乘：
+#+begin_src Haskell
+factorial 0 = 1
+factorial n = n * factorial (n-1)
+#+end_src
+
+Python 这类非函数式语言里要实现类似的效果，就要通过在函数的定义中调用自己来做到。Python 通过递归函数实现阶乘：
+#+begin_src python :results output
+def factorial(n):
+    """
+    计算 n 的阶乘
+    """
+    if n == 0:
+        return(1)
+    else:
+        return(n * factorial(n-1))
+    
+
+print(factorial(4))
+#+end_src
+
+RESULTS:
+: 24
+
+有一些需要反复进行的复杂过程，写成循环的形式会很难受，比如寻路算法里的每个对象的每一次路径探索。显式循环是一个略有点落后的编程方法，现代很多编程语言都在刻意地弱化它，能不用显式循环的时候就尽量不用。

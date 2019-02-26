@@ -1,1 +1,206 @@
-# 数据结构的本质
+#+TITLE: 对象
+
+* 为什么对象在 python 中如此重要
+在 Python 中"一切皆是对象"，很多的东西看起来和其他语言一样，其实本质上都是在调用类方法。
+
+*可以说，无论是对于开发工程师来说，还是对于只拿 python 做科学计算的人来说，不懂对象就等于没学 python，* 另一方面，正因为 python 有统一的面向对象特性，所以它在功能强大的同时也有一条清晰的学习主干。 *所以当你开始写类的时候，python 本身的学习基本就到头了。*
+
+* python 中的对象
+** python 中被翻译成类方法的关键字
+有些语句看起来没有使用类方法，但实际上是被解析成类方法来执行的，我们所写下的不过是 python 的语法糖。
+
+下面的代码使用了 python 的 abs 函数，其作用是求 x 的绝对值：
+
+#+begin_src python :results output
+x = -233  # 创建一个整数对象
+
+print(abs(x))
+
+#+end_src
+
+RESULTS:
+: 233
+
+=abs(x)= 这条语句看起来接近自然语言，但是在实际实际执行的时候，这条语句是被解析成 =x.__abs__()= 来执行的，x 的本质是一个 Int() 对象，而 abs() 触发了 x 的 __abs__() 类方法：
+
+#+begin_src python
+# abs 的定义
+operator.abs(obj)
+operator.__abs__(obj)
+  Return the absolute value of obj.
+#+end_src
+
+** python 中数据类型的本质是对象
+在上面的例子中，x = 233 这条语句其实也是在调用类方法，创建了一个整数对象，这个 x 能够使用类方法就是最直观的证明：
+
+#+begin_src python :results output
+x = 233
+print(x.__add__(998))
+#+end_src
+
+RESULTS:
+: 1231
+
+#+begin_src python :results output
+x = "en taro adun"
+print(x.__add__(998))  # 会报错，因为字符对象是没有 __add__() 这个类方法的
+#+end_src
+
+** python 中模块和包是对象
+#+begin_src python :results output
+import pandas as pd
+print(pd.__doc__)
+#+end_src
+
+RESULTS:
+#+begin_example
+
+pandas - a powerful data analysis and manipulation library for Python
+=====================================================================
+
+,**pandas** is a Python package providing fast, flexible, and expressive data
+structures designed to make working with "relational" or "labeled" data both
+easy and intuitive. It aims to be the fundamental high-level building block for
+doing practical, **real world** data analysis in Python. Additionally, it has
+the broader goal of becoming **the most powerful and flexible open source data
+analysis / manipulation tool available in any language**. It is already well on
+its way toward this goal.
+
+Main Features
+-------------
+Here are just a few of the things that pandas does well:
+
+  - Easy handling of missing data in floating point as well as non-floating
+    point data.
+  - Size mutability: columns can be inserted and deleted from DataFrame and
+    higher dimensional objects
+  - Automatic and explicit data alignment: objects can be explicitly aligned
+    to a set of labels, or the user can simply ignore the labels and let
+    `Series`, `DataFrame`, etc. automatically align the data for you in
+    computations.
+  - Powerful, flexible group by functionality to perform split-apply-combine
+    operations on data sets, for both aggregating and transforming data.
+  - Make it easy to convert ragged, differently-indexed data in other Python
+    and NumPy data structures into DataFrame objects.
+  - Intelligent label-based slicing, fancy indexing, and subsetting of large
+    data sets.
+  - Intuitive merging and joining data sets.
+  - Flexible reshaping and pivoting of data sets.
+  - Hierarchical labeling of axes (possible to have multiple labels per tick).
+  - Robust IO tools for loading data from flat files (CSV and delimited),
+    Excel files, databases, and saving/loading data from the ultrafast HDF5
+    format.
+  - Time series-specific functionality: date range generation and frequency
+    conversion, moving window statistics, moving window linear regressions,
+    date shifting and lagging, etc.
+
+#+end_example
+
+** python 中函数的本质是对象
+#+begin_src python :results output
+def a_func():
+    pass
+
+print(a_func)  # 这里只写了函数句柄，并没有形成一次调用
+#+end_src
+
+RESULTS:
+: <function a_func at 0x00000237B19FC1E0>
+
+** python 中循环的本质是用迭代器遍历一个对象
+
+Python 中要实现类似的效果，就要借助于一个整数序列对象：
+#+begin_src python :results output
+print(range(10))
+
+print("--- 分割线 ---")
+
+for i in range(10):
+    print(i)
+#+end_src
+
+RESULTS:
+#+begin_example
+range(0, 10)
+--- 分割线 ---
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+#+end_example
+
+* 类的使用
+** 定义类
+python 使用 class 关键字来定义一个类：
+#+begin_src python :results output
+class Human(object):
+    """
+    类：某种灵长类生物
+    """
+    pass
+
+print(Human)
+#+end_src
+
+RESULTS:
+: <class '__main__.Human'>
+
+** 类方法
+*** 类方法一般函数的区别
+调用格式的不同只是表面区别，类方法和函数的最大区别就是类方法直接把整个对象作为隐式的实参。类方法在定义时一般都带有 =self= 作为函数的形参，这个 =self= 关键字代表的就是对象实例，在类方法被调用时，不需要再将对象本身作为实参传入，对象的类属性也可以直接被这个类方法使用。而一般的函数必须直接
+*** 魔术方法
+#+begin_src python
+# 在一个对象实例化的时候所调用的第一个方法
+def __new__(self, *argv, *kwargs)
+
+# 一个对象在实例化时的初始化方法，调用顺序在 __new__（） 之后，但一般都不使用 __new__()
+def __init__(self, *argv, *kwargs)
+
+# 一个对象被打印的时候调用的方法
+def __str__(self, *argv, *kwargs)
+#+end_src
+
+*** 几个简单的类方法装饰器
+**** @classmethod
+想要不通过实例而是直接通过类来调用某个类方法，可以给那个类方法加上 @classmethod 装饰器，同时该类方法的参数变为 cls，不再是 self，cls 代表类本身，而 self 代表的是实例本身。
+#+begin_src python :results output
+class Human(object):
+    """
+    类：某种灵长类生物
+    """
+    @classmethod
+    def say_hello(cls):
+        print("Hello!")
+
+Human.say_hello()  # 无需创建实例，直接通过类来调用类方法。依然可以通过实例来调用这个方法
+#+end_src
+
+RESULTS:
+: Hello!
+
+**** @staticmethod
+除了__new__() __init__() 这些特殊类方法，在定义类方法的时候也可以不写 self 形参，写了也可以不调用 self 的类属性；这种类方法方法其实和一般的函数就没什么区别，它不会改变类和实例的状态，这种类方法就被称作静态方法。
+
+静态方法写到类外面也是可以的，但是不太推荐这么做，因为这个类方法一般都和所属的类在逻辑上有联系，写到外面形成一个单独的函数的话不利于代码的逻辑组织和命名空间的整洁。但是把它写在类的内部的话，需要用 @staticmethod 装饰器来修饰一下。
+
+#+begin_src python :results output
+class Human(object):
+    """
+    类：某种灵长类生物
+    """
+    @staticmethod
+    def say_hello():
+        print("Hello!")
+
+trump = Human()
+trump.say_hello()
+#+end_src
+
+RESULTS:
+: Hello!

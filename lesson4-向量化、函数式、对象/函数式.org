@@ -1,37 +1,215 @@
 #+TITLE: 函数与函数式编程
 
 * 定义函数的两种方法
-** def
-#+begin_src python :results output
-def yuan_xiao(x, y):
-    """
-    翱翔者计划专用函数
-    """
-    print(x**2 + y)
+** def 关键字
+python 里面定义函数和类方法最普通常见的方法就是使用 def 关键字，这里只举一点最简单的例子，关于 def 定义函数的其他繁文缛节请大家自行了解。(看到介绍修饰器的直接跳过)
 
-yuan_xiao(x=3)
+#+begin_src python :results output
+def yuan_xiao(x, y=4):
+    """
+    这里是这个函数的文档，写上对这个函数的描述
+    ------
+    :param x: 这里写下对参数 x 进行描述，包括 x 的数据结构(类型)，x 的作用等等
+    :param y: y 的默认值为 4，在调用时也可以对 y 赋予其他值
+    :return: 写下对函数返回值的描述，比如本函数返回两个参数的平方和
+    ------
+    写点调用的例子
+    >>> yuan_xiao(3, 4)
+    """
+    return(x**2 + y**2)
+
+
+print(yuan_xiao(x=3))
 #+end_src
 
-#+RESULTS:
-: 71
+RESULTS:
+: 25
 
-** lambda
+#+begin_src python :results output
+def enhanced_sum(*argv):
+    """
+    针对 python 自带的 sum() 函数只能输入一个 list 参数的问题，定义了这个可以输入多个数值参数的求和函数
+    -----
+    :param *argv: python 定义函数时的一个特殊的形参，这也是 python 的一个保留关键字，本质是一个可索引的参数列表(tuple)，在函数体内用 argv 来调用
+    :return: 所有参数的和
+    -----
+    Example:
+    >>> enhanced_sum(1, 2, 3, 4)  # 结果为 10
+    >>> enhanced_sum()  # 结果为 0
+    """
+    l = list(argv)
+    return(sum(l))
+
+
+print(enhanced_sum(23, 45, 65))
+#+end_src
+
+RESULTS:
+: 133
+
+** lambda 匿名函数
+
+尽管把某些需要重复应用的操作写成一个函数来调用会比较方便，但没有必要给每个函数都用 def 关键字起一个名字，尤其是这个函数比较简单的时候，名字起得太多容易记不住，也会使命名空间混乱。
+
+使用 lambda 关键字可以定义一个匿名函数，这个函数不需要名字
+
+#+begin_src python :results output
+lambda x: x**2
+#+end_src
+
+这样就完成了一个简单的计算平方的函数的定义，但是匿名函数的主要应用方式是用在函数式编程中，而不是像 def 关键字定义的函数那样先定义然后靠函数名来调用。lambda 函数的通常应用方式在下一小节再列举，如果一定要像 def 函数一样使用，也可以先把 =lambda x: x**2= 这个函数对象赋值给命名空间里的一个符号，然后靠这个函数名来调用：
+
+#+begin_src python :results output
+f = lambda x: x**2
+print(f(3))
+#+end_src
+
+RESULTS:
+: 9
+
+* 函数式编程
+** map()
+python 本身就有 +比较弱但是聊胜于无的+ 函数式编程能力，函数式编程指的并不是定义一个函数然后来调用它。定义一个函数然后调用体现的是"模块化"的思想，而函数式编程是把自己定义的任何一种运算或操作映射到一个或多个可索引的对象上，在这种场景下使用匿名函数会比较方便。
+
+python 中的 map() 函数就可以直接把一个函数映射到一个可索引的对象上。比如把一个求平方的运算给映射到一个列表上，对列表中的每个元素求平方：
+#+begin_src python :results output
+m = [1, 2, 3, 4]
+
+n = list(map(lambda x: x**2, m))  # map() 函数产生的是一个特殊的 map() 对象，所以要再用 list() 来把它转换成列表
+
+print(n)
+#+end_src
+
+RESULTS:
+: [1, 4, 9, 16]
+
+map() 函数也可以像这样把一个二元运算映射到两个列表上，比如让下面这两个列表的对应元素相乘：
+
 #+begin_src python :results output
 x = [1, 2, 3, 4]
 y = [3, 5, 5, 2]
 
-print(list(map(ft.partial(yuan_xiao, z=3), x, y)))
+print(list(map(lambda m,n: m * n, x, y)))
 #+end_src
 
-#+RESULTS:
+RESULTS:
 : [3, 10, 15, 8]
 
-* 函数式编程
-** map()
 ** functools 模块
-*** reduce
-#+begin_src python
+想要进行函数式编程，只靠功能单一的 map() 函数是不够的，functools 这个模块里的其它函数可以帮助我们达成更复杂的函数式编程需求。
+*** reduce()
+reduce() 也是一个将函数映射到对象上的函数，但是它的机制和 map() 有很大不同，看下面的例子：
+#+begin_src python :results output
 import functools as ft
+
+m = [1, 2, 4]
+result = ft.reduce(lambda x,y: x + y, m)
+
+print(result)
 #+end_src
-*** partial
-** DataFrame 的函数式类方法
+
+RESULTS:
+: 7
+
+在这个例子中，我们定义了一个两个数相除的 lambda 函数并用 reduce 将其应用到 m 上，在计算时，m 的前两个元素 1 和 2 先求和，求和的结果 3 再和 m 的下一个元素 4 来进行求和，所以最终得到结果 7
+
+reduce 有比较广泛的应用，比如在根据同一个主键连接匹配多个 DataFrame 时，使用 reduce 函数可以避免写很多个 pd.merge() 语句。
+
+*** partial()
+partial() 的本质是给一个函数中的某些参数赋默认值来形成一个新的函数。
+#+begin_src python :results output
+import functools as ft
+
+def f(a_list, find="max"):
+    """
+    用来找出一个列表中的最大值或者最小值
+    -----
+    :param a_list: 一个列表，列表内的元素全为数值
+    :param find: 一个字符串，用来控制函数的功能是寻找最大值还是最小值，合法取值为 "max"，"min"
+    :return: a_list 中的最大值或最小值
+    -----
+    Example
+    >>> m = [1, 2, 3]
+    >>> f(m, find="min")
+    """
+    if find == "max":
+        return max(a_list)
+    elif find == "min":
+        return min(a_list)
+    else:
+        print("find 的值只能为 max 或 min")
+
+m = [[1, 2, 3], [-1, -2, -3]]
+  
+# map() 可以把 f 映射到 m 上，但是没有办法给 find 参数赋值
+# find 的默认值为 max，如果继续使用 map() 函数来完成求最小值的任务，就只能在重新定义一个函数，无法再使用 f 这个函数
+list(map(f, m))
+
+# 而如果使用 partial，就可以对 find 参数赋值了
+result = list(map(ft.partial(f, find="max"), m))
+print("最大值", result)
+# 这里的整个 partial 语句实际上就是一个函数，此处作为 map() 的第一个参数
+result = list(map(ft.partial(f, find="min"), m))
+print("最小值", result)
+#+end_src
+
+RESULTS:
+: 最大值 [3, -1]
+: 最小值 [1, -3]
+
+很多函数是由三方包提供的，使用时需要修改某些参数，partial() 可以让我们在 map() 的时候给这些参数赋值。
+
+** DataFrame 的函数式类方法(重要)
+
+DataFrame 对象提供了一个 .apply() 类方法，可以把某个函数映射到某一列或整个 DataFrame 上。
+
+把一个函数应用到某一列上：
+: df["col_name"].apply(a_function)  # 无需像 map() 一样指定对象，每次隐式迭代这一列中的一个元素
+
+把一个函数应用到整个 DataFrame 上：
+: df.apply(a_function, axis=1)  # 根据 axis 的值，每次隐式迭代某一行或某一列。axis=0 代表行，axis=1 代表列
+
+** 递归函数
+举一个被举烂了的例子：求一个数的阶乘 n!
+
+如果用 python 写成循环的形式，大概会长这样：
+
+#+begin_src python :results output
+n = 4
+result = 1
+for i in range(n):
+    result *= (i+1)
+    
+print(result)
+#+end_src
+
+RESULTS:
+: 24
+
+如果写一个循环来完成这个任务，想要动态改变 n 的值就不那么方便，并且这个循环过程的可复用性也差。想要把这个计算阶乘的过程写成一个函数，就要使用名为递归的技巧。
+
+函数式特性最强的 Haskell 语言中实现递归函数非常方便简单，因为 Haskell 中的高阶函数本来就带有递归呼叫的特性，Haskell 实现阶乘：
+#+begin_src Haskell
+factorial 0 = 1
+factorial n = n * factorial (n-1)
+#+end_src
+
+Python 这类非函数式语言里要实现类似的效果，就要通过在函数的定义中调用自己来做到。Python 通过递归函数实现阶乘：
+#+begin_src python :results output
+def factorial(n):
+    """
+    计算 n 的阶乘
+    """
+    if n == 0:
+        return(1)
+    else:
+        return(n * factorial(n-1))
+    
+
+print(factorial(4))
+#+end_src
+
+RESULTS:
+: 24
+
+有一些需要反复进行的复杂过程，写成循环的形式会很难受，比如寻路算法里的每个对象的每一次路径探索。显式循环是一个略有点落后的编程方法，现代很多编程语言都在刻意地弱化它，能不用显式循环的时候就尽量不用。

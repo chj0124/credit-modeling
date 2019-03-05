@@ -1,4 +1,17 @@
-#+TITLE: 上峰作业
+#+TITLE: 灵姐布置的作业
+
+* 任务内容
+** 读取两个 pkl 数据
+** 提取客户逾期天数
+** 合并三张表
+functools.reduce()
+** 去重
+** 转换 dtype
+** 删除无用字段
+** 异常值处理
+*** 值异常
+*** 格式异常
+*** 逻辑异常
 
 * 作业展示
 ** xlj
@@ -244,4 +257,935 @@ col_posi_int = ['个人住房贷款笔数', '个人商用房贷款笔数', '其�
 for col_name in col_posi_int:
     condition_posi_int = data[col_name].astype('str').apply(lambda x: re.match('^[1-9]\d*$', x) == None)
     data[col_name][condition_posi_int] = np.nan
+#+end_src
+** zyw
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+灵杰小朋友的作业 - 建模数据清洗
+"""
+
+#%%
+import os
+import pandas as pd
+import functools as ft
+
+# 导入数据
+os.getcwd()
+id_info = pd.read_pickle(r"./modeling/id_info.pkl")
+loan_main_info = pd.read_pickle(r"./modeling/loan_main_info.pkl")
+over_day = pd.read_excel(r"./modeling/over_day.xlsx")
+
+#%%
+# 以id_info里的合同编号作主键，合并表格
+data_final = ft.reduce(lambda left, right: pd.merge(left, right, how = 'left', on = '合同编号'), [id_info, loan_main_info, over_day])
+data_final.info()
+
+#%%
+# 剔除重复数据
+data_final = data_final.drop_duplicates() # 删去全部数据相同的重复合同号
+duplicates = data_final[data_final['合同编号'].duplicated(keep=False)] # 查找仅合同编号一致的数据
+data_final = data_final.drop(duplicates.index) # 删去全部仅合同号一致的数据
+
+#%%
+# 将空值、乱码全部替换为-99999
+data_final = data_final.fillna(-99999) # 将当前全部nan数据替换为-99999
+data_final.replace('N/乱码/--等', -99999, inplace=True)
+
+#%%
+# 修改应为字符型的变量类型，清洗异常值，删除无效变量
+data_final.iloc[:, 3:15] = data_final.iloc[:, 3:15].astype(str) # 将数据转化为字符串格式
+data_final.iloc[:, 3:15].columns
+
+# 检查变量基本状况，进行清洗
+data_final['被查询者证件类型'].groupby(data_final['被查询者证件类型']).size() # 99.8%的证件类型均为居民身份证
+
+data_final['查询原因'].groupby(data_final['查询原因']).size()
+data_final['性别'].groupby(data_final['性别']).size()
+data_final['婚姻状况'].groupby(data_final['婚姻状况']).size()
+data_final['学历'].groupby(data_final['学历']).size()
+data_final['学位'].groupby(data_final['学位']).size()
+
+# 检查变量是否有不合逻辑值
+lo = data_final[data_final['婚姻状况']=='未婚']
+lo['配偶姓名'].groupby(lo['配偶姓名']).size()
+lo['配偶证件类型'].groupby(lo['配偶证件类型']).size()
+lo[lo['配偶证件类型']=='居民身份证'].index.tolist()
+data_final.loc[[707, 2362, 2598], ['婚姻状况']] = data_final.loc[[707, 2362, 2598], ['婚姻状况']].replace('未婚', '-99999')
+lo['配偶证件号码'].groupby(lo['配偶证件号码']).size()
+lo['配偶工作单位'].groupby(lo['配偶工作单位']).size()
+
+lo1 = data_final[(data_final['学位']=='博士研究生')|(data_final['学位']=='硕士研究生')]
+lo1['学历'].groupby(lo1['学历']).size()
+lo1[lo1['学历']!='研究生及以上'].index.tolist()
+data_final.loc[lo1[lo1['学历']!='研究生及以上'].index.tolist(), ['学历']] = '-99999'
+lo2 = data_final[data_final['学位']=='本科']
+lo2['学历'].groupby(lo2['学历']).size()
+data_final.loc[lo1[lo1['学历']!='本科'].index.tolist(), ['学历']]='-99999'
+
+# ['学历']变量再分组
+data_final['学历'].groupby(data_final['学历']).size()
+data_final.loc[data_final[data_final['学历']=='其他'].index.tolist(), ['学历']] = '-99999'
+data_final.loc[data_final[(data_final['学历']=='中专')|(data_final['学历']=='初专')|(data_final['学历']=='初中')|(data_final['学历']=='小学')|(data_final['学历']=='文盲或半文盲')].index.tolist(), ['学历']] = '初中及以下'
+
+# 删除无用变量
+data_final.drop({'被查询者证件类型', '学位', '户籍地址', '通讯地址', '配偶姓名', '配偶证件类型', '配偶证件号码', '配偶工作单位'}, axis=1, inplace=True) # 想不出来有什么用处
+
+#%% 
+# 修改应为数值型的变量类型，清洗异常值、无效值
+data_final.iloc[:, 7:62] = data_final.iloc[:, 7:62].apply(pd.to_numeric, errors='coerce').fillna(-99999)
+
+data_final.drop(data_final[data_final['最大逾期天数']==-99999].index.tolist(), axis=0, inplace=True) # 找出无逾期表现的合同号并删除
+
+#%%
+# 修改['首笔贷款发放月份','首张贷记卡发卡月份','首张准贷记卡发卡月份']的格式
+data_final.loc[:, ['首笔贷款发放月份','首张贷记卡发卡月份','首张准贷记卡发卡月份']] = data_final.loc[:, ['首笔贷款发放月份','首张贷记卡发卡月份','首张准贷记卡发卡月份']].astype(str)
+
+d1 = data_final['首笔贷款发放月份'].groupby(data_final['首笔贷款发放月份']).size()
+d1[d1==1].index.tolist()
+data_final['首笔贷款发放月份'].replace({'2013.05', '2015.02', '2015.09'}, {'20130500.0', '20150200.0', '20150900.0'}, inplace=True)
+d2 = data_final['首张贷记卡发卡月份'].groupby(data_final['首张贷记卡发卡月份']).size()
+d2[d2==1].index.tolist()
+data_final['首张贷记卡发卡月份'].replace({'2009.01', '2012.03', '2012.08', '201301.0'}, {'20090100.0', '20120300.0', '20120800.0', '20130100.0'}, inplace=True)
+d3 = data_final['首张准贷记卡发卡月份'].groupby(data_final['首张准贷记卡发卡月份']).size()
+d3[d3==1].index.tolist()
+data_final['首张准贷记卡发卡月份'].replace('2012.02', '20120200.0', inplace=True)
+data_final.loc[:, ['首笔贷款发放月份','首张贷记卡发卡月份','首张准贷记卡发卡月份']] = data_final.loc[:, ['首笔贷款发放月份','首张贷记卡发卡月份','首张准贷记卡发卡月份']].applymap(lambda x: x[:-4])
+
+data_final['首笔贷款发放月份'] = pd.to_datetime(data_final['首笔贷款发放月份'], format='%Y%m', errors='coerce')
+data_final['首张贷记卡发卡月份'] = pd.to_datetime(data_final['首张贷记卡发卡月份'], format='%Y%m', errors='coerce')
+data_final['首张准贷记卡发卡月份'] = pd.to_datetime(data_final['首张贷记卡发卡月份'], format='%Y%m', errors='coerce')
+
+#%%
+# 基于['报告时间']、['进件时间']对['查询请求时间']中的缺失值进行填补
+data_final.loc[:, ['查询请求时间','报告时间','进件时间']] = data_final.loc[:, ['查询请求时间','报告时间','进件时间']].astype(str)
+
+data_final['最终查询时间'] = data_final['查询请求时间']
+I = data_final[(data_final['查询请求时间']=='-99999.0')|(data_final['查询请求时间']=='10000000.0')].index.tolist()
+data_final.loc[I, '最终查询时间'] = data_final.loc[I, '报告时间']
+I1 = data_final[(data_final['最终查询时间']=='-99999')|(data_final['最终查询时间']=='10000000')].index.tolist()
+data_final.loc[I1, '最终查询时间'] = data_final.loc[I1, '进件时间']
+I2 = data_final[(data_final['最终查询时间']=='-99999.0')|(data_final['最终查询时间']=='10000000.0')].index.tolist()
+data_final.loc[I2, '最终查询时间'] = data_final.loc[I2, '进件时间']
+
+data_final.loc[:, ['最终查询时间', '进件时间']] = data_final.loc[:, ['最终查询时间', '进件时间']].applymap(lambda x: x[:-2])
+data_final['最终查询时间'] = pd.to_datetime(data_final['最终查询时间'], format='%Y%m%d', errors='raise')
+data_final['进件时间'] = pd.to_datetime(data_final['进件时间'], format='%Y%m%d', errors='raise')
+
+data_final.drop({'查询请求时间', '报告时间'}, axis=1, inplace=True)
+
+#%%
+# 导出数据
+data_final.to_pickle(r"./modeling/data_final.pkl")
+#+end_src
+** lb
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+  * 数据清洗
+  * 字段格式处理（重复行；异常值；乱码，不标准格式等,不符合逻辑的；缺失值；数据类型转化
+"""
+
+# %%
+import pandas as pd
+import cx_Oracle
+import os
+from operator import itemgetter
+
+os.getcwd()
+os.chdir(r'E:\model_study\pkl')
+
+pd.set_option('max_columns', 100)
+loan_info_df = pd.read_pickle('loan_main_info.pkl')
+id_info_df = pd.read_pickle('id_info.pkl')
+
+cnn = cx_Oracle.connect('cdliubo_lixin360', '7Dc2uyBMDt3c', '10.30.4.36:1521/ods02')  # 连接oracle
+
+variable_sql = '''select a.loan_no 合同编号, case when ovd_days > 0 then 1 
+else 0 end 是否逾期,to_char(a.loan_entry_time,'YYYYMMDD') 进件时间 
+from (select a1.loan_no,b.loan_entry_time,a1.PAY_DT from lxors.B_LOAN_PAY_INFO_V_NEW a1 left join SR_LX_FLOW.LOAN_STATUS_INFO b on b.loan_no = a1.loan_No) a 
+left join (
+select cdg.loan_no ,max(cdg.ovd_days)ovd_days from jiankui_wang_yooli.cdg_history cdg where cdg.busi_dt <= to_char(last_day(add_months(sysdate,-1)),'yyyymmdd') group by cdg.loan_no)cdg on cdg.loan_no=a.loan_no 
+where substr(a.pay_dt,1,6) <='201706' and substr(a.pay_dt,1,6) >='201312' 
+'''
+sql = variable_sql  # 存放sql语句
+sql_df = pd.read_sql(sql, cnn)  # 读取sql
+
+# %%
+# --查询重复行
+f1 = loan_info_df[loan_info_df.duplicated('合同编号', keep=False)]
+f2 = id_info_df[id_info_df.duplicated('合同编号', keep=False)]
+
+# --删除重复行
+loan_info_df = loan_info_df.drop_duplicates().reset_index()
+id_info_df = id_info_df.drop_duplicates().reset_index()
+
+# =============================================================================
+# --去合同号重复行 多个查询原因的、保留ZJK201603030128 一条
+# --id_info_df[id_info_df.duplicated('合同编号',keep=False)].index
+# --id_info_df[id_info_df['合同编号'] == 'ZJK201603030128'].index
+# =============================================================================
+
+loan_del_index = loan_info_df[loan_info_df.duplicated('合同编号', keep=False)].index
+id_del_index = [837, 838, 2511, 2523, 4449, 4639, 4640, 5121, 5122, 6116, 6119]
+id_info_df.drop(id_info_df.index[id_del_index], inplace=True)
+loan_info_df.drop(loan_info_df.index[loan_del_index], inplace=True)
+
+# --合并
+main_info_df = pd.merge(id_info_df, loan_info_df, on='合同编号', how='inner')
+main_info_df = pd.merge(main_info_df, sql_df, on='合同编号', how='inner')
+
+# %%
+#  --缺失值处理 缺失率90%以上的， 删除没有意义的字段：本人声明数目、异议标注数目
+
+main_info_df.isnull().sum()  # 缺失值明细
+missing_data = main_info_df.isnull().sum() / main_info_df.shape[0]
+missing_data[missing_data > 0.9].index
+main_info_df = main_info_df[missing_data[missing_data < 0.9].index]
+
+main_info_df.fillna('-999', inplace=True)  # 暴力替换法
+
+main_info_df.drop(columns='本人声明数目', inplace=True)
+main_info_df.drop(columns='异议标注数目', inplace=True)
+
+# %%
+# --文本字符串类型：异常值奇怪符号处理 空格、 乱码、符号、N、\n,\r,\t，'.' '*'
+
+for j in main_info_df.columns:
+  main_info_df[j] = main_info_df[j].astype('str').str.replace(" ", "").str.replace("\n|\t|\r", "", regex=True).replace(
+    [".", "", "*", "N"], "-999")
+
+datalist = itemgetter(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15)(main_info_df.columns)
+
+datalist1 = itemgetter(range(16, 59))(main_info_df.columns)
+
+for i in datalist:
+  main_info_df[i] = main_info_df[i].str.findall(r"[\u4e00-\u9fa5]").str.join("")  # 只提取中文字符串
+
+main_info_df.fillna('-999', inplace=True)  # 暴力替换法
+
+for i in datalist:
+  main_info_df.loc[main_info_df[i].str.len() == 0, i] = '-999'
+  main_info_df.loc[main_info_df[i].str.contains('乱码', regex=False), i] = '-999'
+
+for i in datalist1:
+  main_info_df.loc[main_info_df[i].str.contains('N|\*|M|-', regex=True), i] = '-999'
+
+# 删除 变量信息多数缺失的行数
+drop_index = main_info_df[
+  (main_info_df['性别'] == '-999') & (main_info_df['学历'] == '-999') & (main_info_df['婚姻状况'] == '-999')].index
+main_info_df.drop(index=drop_index, inplace=True)
+
+# 查询原因：
+main_info_df.loc[main_info_df['查询原因'].str.contains('-999', regex=False), '查询原因'] = '其他'
+
+# 性别
+main_info_df.loc[main_info_df['性别'].str.contains('-999', regex=False), '性别'] = '男'
+
+# 婚姻状况
+main_info_df.loc[main_info_df['婚姻状况'].str.contains('-999', regex=False), '婚姻状况'] = '其他'
+main_info_df.loc[main_info_df['婚姻状况'].str.contains('-999', regex=False), '婚姻状况'] = '其他'
+
+# 学历
+main_info_df.loc[main_info_df['学历'].str.contains('中专|初专|高中', regex=True), '学历'] = '高中或中专'
+main_info_df.loc[main_info_df['学历'].str.contains('大专', regex=True), '学历'] = '大专'
+main_info_df.loc[main_info_df['学历'].str.contains('初中|文盲|999|小学|其他', regex=True), '学历'] = '初中及以下'
+main_info_df.loc[main_info_df['学历'].str.contains('本科', regex=True), '学历'] = '本科'
+main_info_df.loc[main_info_df['学历'].str.contains('研究生及以上', regex=True), '学历'] = '研究生及以上'
+
+# 学位
+main_info_df.drop(columns='index_y', inplace=True)
+main_info_df.drop(columns='index_x', inplace=True)
+main_info_df.drop(columns='学位', inplace=True)
+
+# 配偶
+main_info_df.drop(columns='配偶姓名', inplace=True)
+main_info_df.drop(columns='配偶证件类型', inplace=True)
+
+# 贷款笔数
+main_info_df.loc[main_info_df['个人商用房贷款笔数'].str.contains('-999', regex=False), '个人商用房贷款笔数'] = '0.0'
+main_info_df.loc[main_info_df['其他贷款笔数'].str.contains('-999', regex=False), '其他贷款笔数'] = '0.0'
+main_info_df.loc[main_info_df['个人住房贷款笔数'].str.contains('-999', regex=False), '个人住房贷款笔数'] = '0.0'
+
+# 通讯地址，户籍地址，配偶工作单位
+main_info_df.loc[main_info_df['通讯地址'].str.contains('-999', regex=False), '通讯地址'] = '无'
+main_info_df.loc[main_info_df['户籍地址'].str.contains('-999', regex=False), '户籍地址'] = '无'
+main_info_df.loc[main_info_df['配偶工作单位'].str.contains('-999', regex=False), '配偶工作单位'] = '无'
+
+#
+
+
+# %%
+# --配偶证件号码异常处理 18位长度
+main_info_df.loc[main_info_df['配偶证件号码'].str.len() < 18, '配偶证件号码'] = '无'
+# %%
+#  --时间类型字段异常处理及类型转化
+
+date_list = (main_info_df.columns[main_info_df.columns.str.contains('发卡月份|发放月份|时间', regex=True)])
+
+for m in date_list:
+  main_info_df[m] = main_info_df[m].replace(["-999", "10000000"], "10000000.0")
+
+
+def Df_change_values(condition, listname1, listname2, df_name=main_info_df):
+  '''
+     满足某种条件下，将某一列listname2值赋值给另一列listname1
+  '''
+  df_name.loc[condition, listname1] = df_name.loc[condition, listname2].values
+
+
+condition = (main_info_df['查询请求时间'] == '10000000.0') & (main_info_df['报告时间'] != '10000000.0')
+Df_change_values(condition, '查询请求时间', '报告时间')
+condition1 = main_info_df['查询请求时间'].str[-4:-2] == '00'
+Df_change_values(condition1, '查询请求时间', '进件时间')
+main_info_df['查询请求时间'] = pd.to_datetime(main_info_df['查询请求时间'].str[0:8], format='%Y%m%d')
+
+
+def Month_date_format(month, df_name=main_info_df):
+  '''
+     满足某种条件下，比如10000000.0,19000000.0,'2015.0'、'201315'
+     pd.to_datetime('190001',format = '%Y%M')
+     月份>12改成时间 19000101.0
+  '''
+  main_info_df.loc[main_info_df[month] == '10000000.0', month] = '19000101.0'
+  main_info_df.loc[main_info_df[month].str[4:6] > '12', month] = '19000101.0'
+  con1 = (main_info_df[month].str[4:6] <= '12') & (main_info_df[month].str[4:6] != '')
+  main_info_df.loc[con1, month] = pd.to_datetime(main_info_df.loc[con1, month].str.split(".").str.join("").str[0:6],
+    format='%Y%m')
+
+
+Month_date_format('首笔贷款发放月份')
+Month_date_format('首张贷记卡发卡月份')
+Month_date_format('首张准贷记卡发卡月份')
+main_info_df['进件时间'] = pd.to_datetime(main_info_df['进件时间'].str.split(".").str.join("").str[0:8], format='%Y%m%d')
+
+# %%
+#  -- 笔数、机构数、账户、月份、异常 超过100 异常
+
+num_list = (main_info_df.columns[main_info_df.columns.str.contains('月数|机构数|月份数|账户数', regex=True)])
+
+for i in num_list:
+  main_info_df.loc[main_info_df[i].astype('float') > 100, i] = '-999'
+
+# %%
+#  -- 额度 超过1000000 异常 更改为-999
+
+amount_list = (main_info_df.columns[main_info_df.columns.str.contains('额度|信额|余额|总额|金额|还款', regex=True)])
+for i in amount_list:
+  main_info_df.loc[main_info_df[i].astype('float') > 1000000, i] = '-999'
+
+# %%
+
+#  -- 剔除部分无效变量、将转化数值型字段输出xlsx
+
+main_info_df.drop(columns='报告时间', inplace=True)
+
+main_info_df.drop(columns='被查询者证件类型', inplace=True)
+
+list3 = itemgetter(10,11,12,14,16)(main_info_df.columns)
+list4 = itemgetter(range(18,53))(main_info_df.columns)
+
+
+for i in list3:
+    main_info_df[i] = main_info_df[i].astype('float64')
+main_info_df.dtypes
+for i in list4:
+    main_info_df[i] = main_info_df[i].astype('float64')
+
+main_info_df.to_excel('main_info.xlsx',index = False,float_format="%.2f")
+
+main_info_df.dtypes
+# %%
+# =============================================================================
+# main_info_df.drop(columns = 'index_y',inplace = True)
+# main_info_df.drop(columns = 'index_x',inplace = True)
+# main_info_df.fillna('-999',inplace = True) # 暴力替换法
+# main_info_df.columns
+# cc = main_info_df['学历'].value_counts()
+# try:
+#     main_info_df['贷记卡最长逾期月数'].astype(float)
+# except IOError:
+#     pass
+# main_info_df['准贷记卡60天以上单月最高透支余额'][main_info_df['准贷记卡60天以上单月最高透支余额'].astype('int')<0]
+# set1 = set()
+# set2 = set()
+# set3 = set()
+# set4 = set()
+# set5 = set()
+# set6 = set()
+# set7 = set()
+# set8 = set()
+# set9 = set()
+# set10 = set()
+# set11 = set()
+# for index, row in main_info_df.iterrows():
+#     set1.add(row['被查询者证件类型'])
+#     set2.add(row['查询原因'])
+#     set3.add(row['性别'])
+#     set4.add(row['婚姻状况'])
+#     set5.add(row['学历'])
+#     set6.add(row['学位'])
+#     set7.add(row['通讯地址'])
+#     set8.add(row['户籍地址'])
+#     set9.add(row['配偶证件号码'])
+#     set10.add(row['配偶证件类型'])
+#     set11.add(row['配偶工作单位'])
+# set7
+# =============================================================================
+#+end_src
+** wt
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Feb 19 09:49:36 2019
+
+@author: a4496
+"""
+import numpy as np
+import pandas as pd 
+import os
+import missingno
+import matplotlib.pyplot as plt
+from operator import itemgetter
+os.getcwd()
+os.chdir('C:\\wuting\\study\\python\\翱翔者计划\\lesson3')
+os.getcwd()
+
+#导入三个原始表
+np.set_printoptions(suppress=True)
+id_info = pd.read_pickle('id_info.pkl')
+loan_main_info = pd.read_pickle('loan_main_info.pkl')
+ovd_days = pd.read_csv('ovd_days.csv')
+
+#对客户信息表进行去重
+id_info_qc = id_info.drop_duplicates('合同编号','last')
+loan_main_info_qc = loan_main_info.drop_duplicates('合同编号','last')
+
+#查看数据类型
+id_info_qc.dtypes
+loan_main_info_qc.dtypes
+ovd_days.dtypes
+
+#原始数据表合并
+data0 = pd.merge(id_info_qc,loan_main_info_qc,how='left',on='合同编号')
+data1 = pd.merge(data0,ovd_days,how='left',left_on='合同编号',right_on='LOAN_NO')
+
+#查看数据大小
+data1.shape
+
+#数据缺失值查询
+missingno.matrix(id_info)
+
+#计算字段缺失值比例，删除缺失比例99%以上字段
+data1_null_0 = data1.isnull().sum(axis=0).sort_values(axis=0,ascending=False,na_position='last')/len(data1)
+print(data1_null_0)
+plt.plot(data1_null_0)
+data1_null_0 = pd.DataFrame(data1_null_0)
+data1_null_0.columns = ['缺失比例']
+data1 = data1[list(data1_null_0[data1_null_0['缺失比例'] < 0.9].index)]
+
+
+#计算每行的缺失数
+data1_null_1 = data1.isnull().sum(axis=1)
+data1['缺失数'] = data1_null_1
+
+#删除缺失值太多的行
+data1 = data1[data1['缺失数'] < 54]
+
+#NAN填充-999
+data1 = data1.fillna(-999)
+
+#删除不需要的列
+data1.drop(['查询请求时间','报告时间','被查询者证件类型','学位','户籍地址','LOAN_NO','缺失数'], axis = 1, inplace = True)
+
+#数据替换
+data1 = data1.astype('str')
+data1.dtypes
+var0 = data1.columns
+var = var0.drop('合同编号')
+var
+for i in var:
+    data1[i] = data1[i].str.replace(' ','').str.replace('　','').str.replace('*','').str.replace('N/乱码/--等','-999').str.replace('N','-999').str.replace('\n','').str.replace('M','').str.replace('.','')
+
+for i in var:
+   data1[i] = data1[i].replace('','-999')
+
+data1 = data1.fillna(-999)
+
+data1.dtypes
+
+#检验数据替换
+xx = data1['OVD_DAYS'].value_counts()
+
+#获取列名
+collist = data1.columns.values.tolist()
+
+#时间变量
+data1.loc[data1['首张贷记卡发卡月份'] == '100000000','首张贷记卡发卡月份'] = '-999'
+data1.loc[data1['首笔贷款发放月份'] == '100000000','首笔贷款发放月份'] = '-999'
+data1.loc[data1['首张准贷记卡发卡月份'] == '100000000','首张准贷记卡发卡月份'] = '-999'
+
+data1['首张贷记卡发卡月份'] = data1['首张贷记卡发卡月份'].str[0:6]
+data1['首笔贷款发放月份'] = data1['首笔贷款发放月份'].str[0:6]
+data1['首张准贷记卡发卡月份'] = data1['首张准贷记卡发卡月份'].str[0:6]
+
+#数据类型规范
+list1 = itemgetter(range(0,25))(data1.columns)
+list2 = itemgetter(range(30,38))(data1.columns)
+list3 = itemgetter(range(42,44))(data1.columns)
+list4 = itemgetter(range(47,52))(data1.columns)
+list5 = itemgetter(range(53,54))(data1.columns)
+
+list1
+
+for i in list1:
+    data1[i] = data1[i].astype('float64')
+    
+for i in list2:
+    data1[i] = data1[i].astype('float64')
+    
+for i in list3:
+    data1[i] = data1[i].astype('float64')
+    
+for i in list4:
+    data1[i] = data1[i].astype('float64')
+    
+for i in list5:
+    data1[i] = data1[i].astype('float64')
+
+data1.dtypes
+
+data1['是否坏客户'] = data1['OVD_DAYS']
+data1.loc[data1['是否坏客户'] >= 61,'OVD_DAYS'] = 1
+data1.loc[data1['是否坏客户'] <= 60,'OVD_DAYS'] = 0
+
+yy = data1['是否坏客户'].value_counts()
+
+data1.to_excel('data1.xlsx',float_format = '%.1f',index = False)
+
+#+end_src
+** wjk
+#+begin_src python
+# -*- coding: utf-8 -*-
+'''
+  建模实战 数据清洗环节
+  
+'''
+
+import pandas as pd
+import numpy as np
+import matplotlib as mp
+
+
+# 1 获取文件路径
+id_info_adr = 'F:\\py\\id_info.pkl'
+loan_main_info_adr = 'F:\\py\\loan_main_info.pkl'
+loan_over_adr = 'F:\\py\\loan_over.csv'
+
+
+# 2 读取客户信息，客户征信以及逾期信息
+loan_over = pd.read_csv(loan_over_adr, encoding = 'GB2312') #逾期信息
+loan_main_info = pd.read_pickle(loan_main_info_adr) # 征信信息
+id_info = pd.read_pickle(id_info_adr) #客户信息
+
+
+# 3 合并表 以第一列为合并主键
+data = [loan_over, loan_main_info, id_info ]
+
+for i in range(len(data)):
+    if (i == 0 ):
+        df_group = data[i]
+    else :
+        df_1 = pd.merge(data[i], df_group, how = 'inner', on = data[i].columns[0] )
+        df_group = df_1
+        
+
+# 4 去除重复 完全相同取一条,重复的不同就删除
+df_group = df_group.drop_duplicates(keep = 'first')
+
+df_group = df_group.drop_duplicates(subset = df_group.columns[0] , keep = False)
+
+
+# 5 数据清洗
+# 5.1 删除无用字段 从意义删除无用字段，从数值上删除值过于集中的字段
+del_col = ['被查询者证件类型', '通讯地址', '户籍地址', '配偶姓名', '配偶证件类型', '配偶证件号码', '配偶工作单位' ]
+
+for i in del_col:
+    df_group = df_group.drop([i], axis = 1)
+    
+'''查询各个字段元素分布情况
+for i in range(len(df_group.columns)):
+    print(df_group[df_group.columns[57]].value_counts())
+'''        
+  
+del_col1 = ['本人声明数目', '异议标注数目']
+
+for i in del_col1:
+    df_group = df_group.drop([i], axis = 1)
+
+
+# 5.2 异常值处理
+# print(len(df_group.columns)) 5962
+
+col_str = ['查询原因', '性别', '婚姻状况', '学历', '学位']
+
+col_num = ['个人住房贷款笔数', '个人商用房贷款笔数', '其他贷款笔数', '贷记卡账户数', '准贷记卡账户数', '呆账笔数', '呆账余额', '资产处置笔数', '资产处置余额', '保证人代偿笔数', '保证人代偿余额', '贷款逾期笔数', '贷款逾期月份数', '贷款单月最高逾期总额', '贷款最长逾期月数', '贷记卡逾期账户数', '贷记卡逾期月份数', '贷记卡单月最高逾期金额', '贷记卡最长逾期月数', '准贷记卡60天以上透支账户数', '准贷记卡60天以上透支月份数', '准贷记卡60天以上单月最高透支余额', '准贷记卡60天以上最长透支月数', '未结清贷款贷款法人机构数', '未结清贷款贷款机构数', '未结清贷款贷款笔数', '未结清贷款合同总额', '未结清贷款贷款余额', '未结清贷款最近6个月平均应还款', '未销户贷记卡发卡法人机构数', '未销户贷记卡发卡机构数', '未销户贷记卡账户数', '未销户贷记卡授信总额', '未销户单家行最高授信额', '未销户贷记卡单家行最低授信额', '未销户贷记卡已用额度', '未销户贷记卡最近6个月平均使用额度', '未销户准贷记卡发卡法人机构数', '未销户准贷记卡发卡机构数', '未销户准贷记卡账户数', '未销户准贷记卡授信总额', '未销户单家行最高授信额.1', '未销户准贷记卡单家行最低授信额', '未销户准贷记卡透支余额', '未销户准贷记卡最近6个月平均透支余额', '对外担保笔数', '对外担保金额', '对外担保本金余额', '是否逾期60', '是否逾期30' ]
+
+col_date = ['查询请求时间', '报告时间', '首笔贷款发放月份', '首张贷记卡发卡月份', '首张准贷记卡发卡月份' ,'进件时间' ]
+
+# 5.2.1 字符串字段处理 将空值赋值为‘-9999’，将乱码赋值为‘-404’
+
+for i in col_str:
+    df_group[i] = df_group[i].fillna('-9999')
+    df_group[i] = df_group[i].replace('N/乱码/--等','-404')
+    
+# 查询原因
+
+# 性别
+df_group['性别'] = df_group['性别'].replace('-404','-9999')
+
+# 婚姻状况
+df_group['婚姻状况'] = df_group['婚姻状况'].replace('-404','-9999')
+
+# 学历 学位（逻辑错误的异常值以哪个为准）
+df_group[['学历','学位']] = df_group[['学历','学位']].replace('-404','-9999')
+
+# dt = df_group[['学历','学位']].groupby(['学历','学位']).学历.count()
+# 参考逾期率分组
+# dt = df_group[['学历','是否逾期30']].groupby('学历').是否逾期30.agg(['count','sum'])
+# dt['逾期率'] =  dt['sum'] / dt['count']
+# dt.sort_values("逾期率",inplace=False)
+
+
+# 5.2.2 将所有数值型转换为数值型
+df_group[col_num] = df_group[col_num].apply(pd.to_numeric, errors='coerce')
+
+# df_group['贷款最长逾期月数'] = df_group['贷款最长逾期月数'].replace(10000000,np.nan)
+
+# 贷款最长逾期月数 大于100年的数据删除
+#dt1 = df_group.sort_values('贷款最长逾期月数', inplace=False, ascending = False)
+
+df_group.drop(axis = 0 , index = df_group[df_group['贷款最长逾期月数'] > 1200].index , inplace = True )
+
+# 贷记卡逾期月份数
+dt1 = df_group.sort_values('贷记卡逾期月份数', inplace=False, ascending = False)
+
+df_group.drop(axis = 0 , index = df_group[df_group['贷记卡逾期月份数'] > 480].index , inplace = True )
+
+# 贷记卡最长逾期月数
+df_group.drop(axis = 0 , index = df_group[df_group['贷记卡最长逾期月数'] > 480].index , inplace = True )
+
+# 未结清贷款合同总额 < 未结清贷款贷款余额
+df_group.loc[df_group['未结清贷款合同总额'] < df_group['未结清贷款贷款余额'],['未结清贷款贷款余额','未结清贷款合同总额']] = np.nan
+
+# 未销户贷记卡发卡法人机构数 > 未销户贷记卡发卡机构数
+df_group.loc[df_group['未销户贷记卡发卡机构数'] < df_group['未销户贷记卡发卡法人机构数'],['未销户贷记卡发卡机构数','未销户贷记卡发卡法人机构数']] = np.nan
+
+df_group.loc[df_group['未销户贷记卡发卡机构数'] > 2000,'未销户贷记卡发卡机构数'] = np.nan
+df_group.loc[df_group['未销户贷记卡发卡法人机构数'] > 2000,'未销户贷记卡发卡法人机构数'] = np.nan       
+
+# 未销户准贷记卡发卡法人机构数 > 未销户准贷记卡发卡机构数
+df_group.loc[df_group['未销户准贷记卡发卡机构数'] < df_group['未销户准贷记卡发卡法人机构数'],['未销户准贷记卡发卡机构数','未销户准贷记卡发卡法人机构数']] = np.nan
+
+df_group.loc[df_group['未销户准贷记卡发卡机构数'] > 2000,'未销户准贷记卡发卡机构数'] = np.nan
+df_group.loc[df_group['未销户准贷记卡发卡法人机构数'] > 2000,'未销户准贷记卡发卡法人机构数'] = np.nan   
+
+# 未销户准贷记卡账户数
+df_group.loc[df_group['未销户准贷记卡账户数'] > 2000,'未销户准贷记卡账户数'] = np.nan
+
+# 把所有为空的转换成-9999
+df_group[col_num] = df_group[col_num].fillna(-9999)
+
+# 5.2.3 将时间转化成时间
+#查询请求时间 将.0去掉 把10000000 转为空值
+#将10000000.0 转换为9999-12-31
+df_group['查询请求时间'] = df_group['查询请求时间'].astype(str).str.replace('.0', '', regex = False)
+df_group['查询请求时间'] = df_group['查询请求时间'].replace('10000000',np.nan)
+df_group['查询请求时间'] = df_group['查询请求时间'].apply(pd.to_datetime)
+
+#报告时间 将.0去掉 把10000000 转为99991231 ,*去掉
+df_group['报告时间'] = df_group['报告时间'].astype(str).str.replace('.0','',regex =False)
+df_group['报告时间'] = df_group['报告时间'].astype(str).str.replace('*','',regex =False)
+df_group['报告时间'] = df_group['报告时间'].replace('10000000',np.nan)
+df_group['报告时间'] = pd.to_datetime(df_group['报告时间'],errors = 'coerce')
+
+#首笔贷款发放月份 
+df_group['首笔贷款发放月份'] = df_group['首笔贷款发放月份'].astype(str).str.replace('.0','',regex =False)
+df_group['首笔贷款发放月份'] = df_group['首笔贷款发放月份'].replace('10000000',np.nan)
+df_group['首笔贷款发放月份'] = df_group['首笔贷款发放月份'].astype(str).str.replace('*','',regex =False)
+df_group['首笔贷款发放月份'] = pd.to_datetime(df_group['首笔贷款发放月份'].str[:6] ,errors = 'coerce')
+
+#首张贷记卡发卡月份
+df_group['首张贷记卡发卡月份'] = df_group['首张贷记卡发卡月份'].astype(str).str.replace('.0','',regex =False)
+df_group['首张贷记卡发卡月份'] = df_group['首张贷记卡发卡月份'].replace('10000000',np.nan)
+df_group['首张贷记卡发卡月份'] = df_group['首张贷记卡发卡月份'].astype(str).str.replace('*','',regex =False)
+df_group['首张贷记卡发卡月份'] = pd.to_datetime(df_group['首张贷记卡发卡月份'].str[:6] ,errors = 'coerce')
+
+#首张准贷记卡发卡月份
+df_group['首张准贷记卡发卡月份'] = df_group['首张准贷记卡发卡月份'].astype(str).str.replace('.0','',regex =False)
+df_group['首张准贷记卡发卡月份'] = df_group['首张准贷记卡发卡月份'].replace('10000000',np.nan)
+df_group['首张准贷记卡发卡月份'] = df_group['首张准贷记卡发卡月份'].astype(str).str.replace('\*|\-','',regex =True)
+df_group['首张准贷记卡发卡月份'] = pd.to_datetime(df_group['首张准贷记卡发卡月份'].str[:6] ,errors = 'coerce')
+
+#进件时间
+df_group['进件时间'] = df_group['进件时间'].astype(str).str.replace('.0','',regex =False)
+df_group['进件时间'] = pd.to_datetime(df_group['进件时间'],errors = 'coerce')
+
+
+# 把时间为空的转为9999-12-31
+for i in col_date:
+    df_group.loc[df_group[i].isnull(),i] = '1900-12-31'
+    df_group[i] = pd.to_datetime(df_group[i] ,errors = 'coerce')
+    
+    
+#转为PKL
+df_group.to_pickle('F:\\py\\result.pkl')
+    
+
+ 
+'''
+df_group.loc[df_group['首张贷记卡发卡月份'].isnull(),'首张贷记卡发卡月份'] = '9999-12-31'
+
+df_group['首张准贷记卡发卡月份'].astype(str).str.replace('\*|\-','',regex =True)
+dt3 = 
+
+dt3 = df_group['首张准贷记卡发卡月份'].describe()
+
+df_group['首笔贷款发放月份'].astype(float).max() describe()
+
+df_group.dtypes
+df_group['报告时间'] = df_group['报告时间'].apply(pd.to_datetime)
+
+df_group['报告时间'].min()describe()
+df_group['报告时间'].astype(str).apply(len).value_counts()
+
+.astype(str).apply(len).value_counts()
+df_group['报告时间'].dtypes
+
+dt3 = df_group['查询请求时间'].
+
+.astype(str).apply(len).value_counts()
+
+
+df_group['查询请求时间'].astype(str).apply(pd.to_timedelta)
+
+for i in col_date:
+    df_group[i] = df_group[i].astype(str).str.replace('a', np.nan)
+    
+    
+    
+    查询请求时间
+    df_group['查询请求时间'] = df_group[df_group['查询请求时间'].astype(str).str.contains('a')]
+    
+    
+    df_group[df_group['查询请求时间'].astype(str).str.contains('a')]
+    
+
+df_group[col_date[0]] = df_group[col_date[0]].str.replace(['.'],'')
+
+
+dt2 = df_group[df_group[col_date[0]].astype(str).apply(len) != 10]
+
+df_group['查询请求时间'].astype(str).str.replace(['a'], np.nan)
+
+
+.astype(str).apply(len).value_counts()
+
+df_group[col_date[0]].astype(str).apply(len).value_counts()
+
+
+
+df_group[['test1', col_date[0]]]
+
+df_group[col_date[0]].value_counts()
+
+
+
+df_group['test1'] = df_group['test1'].replace(['***','10000000.0','N'],'99991231.0')
+
+
+df_group[col_date[0]].astype(str).str.replace('.a',np.nan,regex = False).apply(len).value_counts()
+
+
+df_group[col_date[0]] = df_group[col_date[2]].astype(str).str.replace('\.','',regex = False)
+
+df_group[col_date] = df_group[col_date].apply(pd.to_datetime)
+
+
+pd.Series(['f.o', 'fuz', np.nan]).str.replace('f.', 'ba', regex= True)
+
+
+
+df_group[col_date[0]].value_counts()
+
+
+
+for i in col_str:
+    print(df_group[i].dtype)
+    print(df_group[i].value_counts())
+    
+    
+    
+df_group[col_num] = df_group[col_num].apply(pd.to_numeric, errors='coerce')
+    
+
+
+pd.to_datetime #转换为日期
+pd.to_timedelta #转换为时间戳
+
+
+pd.to_numeric(s, errors='coerce')
+
+
+
+
+print(df_group['个人住房贷款笔数'].value_counts())
+
+
+
+[pd.isnull(df_group.columns[0])]
+
+
+for i in range(len(df_group.columns)):    
+    print(df_group.columns[i])
+ 
+
+   
+print(len(df_group.columns))
+
+print(dict(df_group['性别'].value_counts()))
+print(df_group.columns[0])
+
+dt = defaultdict(lambda : defaultdict(lambda :0)) # 声明一个二维dict 
+print(dt)
+
+for i in range(len(df_group.columns)):
+ dt[df_group.columns[i]] = dict(df_group[df_group.columns[i]].value_counts())
+ 
+ 
+     print(dict(df_group[i].value_counts()))
+    print(dict(df_group[df_group.columns[i]].value_counts()))
+ 
+ 
+    print(dict(df_group['个人住房贷款笔数'].value_counts()))
+'''
+
+#+end_src
+** dxp
+#+begin_src python
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 25 10:53:31 2019
+
+@author: Administrator
+"""
+
+import cx_Oracle
+import pandas as pd
+import numpy as np
+
+db_usr_name = 'DANGXIAOPEI_LIXIN360'  # oracle 账号
+db_pw = 'Dxp123456'              # oracle 密码
+oracle_info = db_usr_name + '/' + db_pw + '@10.30.4.36:1521/ods02'
+conn = cx_Oracle.connect(oracle_info, encoding="UTF-8", nencoding="UTF-8")  
+
+#0读取数据
+df_Id_info = pd.read_pickle(r"C:/Users/Administrator/Desktop/datamodelingassignmentfromlj/id_info.pkl")
+df_loan_main_info = pd.read_pickle(r"C:/Users/Administrator/Desktop/datamodelingassignmentfromlj/loan_main_info.pkl")
+df_Id_info.合同编号
+df_loan_main_info.合同编号
+df_loan_ovd_info = pd.read_sql('''
+SELECT 
+cdg.loan_contract_no 合同编号,
+max(to_number(cdg.OVERDUE_DAYS)) 逾期天数
+from lxors.I_CDG_LOAN_INFO_V_NEW cdg
+group by cdg.loan_contract_no                     
+''',con=conn)
+
+#1去除重复项
+df_Id_info.drop_duplicates(inplace=True)         #删除所有信息重复的合同号,只保留一个
+df_loan_main_info.drop_duplicates('合同编号',False,inplace=True)   #查找重复合同号并删除,因为不确定哪一条是正确的，哪一条是错误的
+
+#2合并表
+df_stage = pd.merge(df_Id_info,df_loan_main_info,how = 'outer',on = '合同编号')
+df_loan_base_info = pd.merge(df_stage,df_loan_ovd_info,how = 'left', on = '合同编号' )
+
+#3异常值处理
+df_loan_base_info.drop(['被查询者证件类型','本人声明数目','异议标注数目','通讯地址','户籍地址','配偶姓名','配偶证件类型','配偶证件号码','配偶工作单位'],axis=1,inplace=True) #删除无用字段
+df_loan_base_info.replace('N',-9999,inplace=True) #将N空值转换为-9999
+df_loan_base_info.replace('N/乱码/--等',-9999,inplace=True)  #将乱码转换为-9999
+df_loan_base_info.replace('*',-9999,inplace=True) 
+df_loan_base_info.replace('***',-9999,inplace=True) 
+df_loan_base_info.replace('*****',-9999,inplace=True) 
+df_loan_base_info.replace('******',-9999,inplace=True) 
+df_loan_base_info.replace('--',-9999,inplace=True)
+df_loan_base_info.replace('M',-9999,inplace=True)
+df_loan_base_info.replace('N',-9999,inplace=True)
+df_loan_base_info.replace(' ',-9999,inplace=True)
+df_loan_base_info.replace('.',-9999,inplace=True)
+df_loan_base_info.iloc[:,9:60] = df_loan_base_info.iloc[:,9:60].apply(pd.to_numeric, errors='coerce') #将非数值型的字符串转换为空值
+df_loan_base_info.fillna(-9999,inplace=True)   #将nan空值转换为-9999
+df_loan_base_info["贷款最长逾期月数"].replace(1400,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷款最长逾期月数"].replace(43000,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷记卡逾期账户数"].replace(36819,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷记卡逾期月份数"].replace(496,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷记卡逾期月份数"].replace(847,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷记卡单月最高逾期金额"].replace(10000000,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["贷记卡最长逾期月数"].replace(989,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["准贷记卡60天以上单月最高透支余额"].replace(10000000,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["准贷记卡60天以上单月最高透支余额"].replace(100000000,-9999999999,inplace=True) #异常值处理
+df_loan_base_info["未销户准贷记卡账户数"].replace('2071',-9999999999,inplace=True) #异常值处理
+df_loan_base_info["未销户准贷记卡账户数"].replace('27000',-9999999999,inplace=True) #异常值处理
+df_loan_base_info["未销户准贷记卡账户数"].replace('230000',-9999999999,inplace=True) #异常值处理
+
+#4字段格式标准化
+df_loan_base_info["查询请求时间"] = df_loan_base_info["查询请求时间"].astype(str).str[0:8]  #将浮点型转换为字符串
+df_loan_base_info["查询请求时间"] = df_loan_base_info["查询请求时间"].apply(pd.to_datetime,errors='coerce')
+
+df_loan_base_info["报告时间"] = df_loan_base_info["报告时间"].astype(str).str[0:8]   #将浮点型转换为字符串
+df_loan_base_info["报告时间"] = df_loan_base_info["报告时间"].apply(pd.to_datetime,errors='coerce')
+
+df_loan_base_info["首笔贷款发放月份"] = df_loan_base_info["首笔贷款发放月份"].astype(str).str.split('.').str.join('')
+df_loan_base_info["首笔贷款发放月份"] = df_loan_base_info["首笔贷款发放月份"].str[0:6].apply(pd.to_datetime,errors='coerce')
+
+df_loan_base_info["首张贷记卡发卡月份"] = df_loan_base_info["首张贷记卡发卡月份"].astype(str).str.split('.').str.join('') 
+df_loan_base_info["首张贷记卡发卡月份"] = df_loan_base_info["首张贷记卡发卡月份"].str[0:6].apply(pd.to_datetime,errors='coerce')
+
+df_loan_base_info["首张准贷记卡发卡月份"] = df_loan_base_info["首张准贷记卡发卡月份"].astype(str).str.split('.').str.join('') 
+df_loan_base_info["首张准贷记卡发卡月份"] = df_loan_base_info["首张准贷记卡发卡月份"].str[0:6].apply(pd.to_datetime,errors='coerce')
+
+#5写入EXCEL 
+excel = pd.ExcelWriter(r"C:/Users/Administrator/Desktop/datamodelingassignmentfromlj/data.xlsx")
+df_loan_base_info.to_excel(excel,'Sheet1')
+excel.save()
+
+
+#pd.to_datetime(df_loan_base_info['查询请求时间'],format='%Y%m%d')
+#df_loan_base_info.dtypes
+#df_loan_base_info
+#x=df_loan_base_info["首笔贷款发放月份"].value_counts()
+
+#+end_src
+** wrs
+#+begin_src python
+#%% 处理异常: 8 位数字
+c_eight_number = df_id_info['查询请求时间'].apply(lambda x:re.match("\d{8}", x) is not None)
+
+#%% 剔除非 8 位数字的数据
+df_id_info = df_id_info[c_eight_number]
+
+#%% 年的范围
+c_year = df_id_info['查询请求时间'].apply(lambda x: x[0:4]).astype('int').apply(lambda x: x > 1971 & x < 2020)
+
+#%% 月的范围
+c_month = df_id_info['查询请求时间'].apply(lambda x: x[4:6]).astype('int').apply(lambda x: x > 0 & x < 13)
+
+#%% 日的范围
+c_day = df_id_info['查询请求时间'].apply(lambda x: x[6:8]).astype('int').apply(lambda x: x > 0 & x < 32)
+
+#%% 处理
+df_id_info = df_id_info[c_year & c_month & c_day]
+
+#%% 转换为时间格式
+pd.to_datetime(df_id_info['查询请求时间'])
 #+end_src

@@ -98,7 +98,11 @@ RESULTS:
 ** functools 模块
 想要进行函数式编程，只靠功能单一的 map() 函数是不够的，functools 这个模块里的其它函数可以帮助我们达成更复杂的函数式编程需求。
 *** reduce()
-reduce() 也是一个将函数映射到对象上的函数，但是它的机制和 map() 有很大不同，看下面的例子：
+reduce() 也是一个将函数映射到对象上的函数，但是它的机制和 map() 有很大不同：
+
+: reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+
+看下面的例子：
 #+begin_src python :results output
 import functools as ft
 

@@ -213,3 +213,5 @@ RESULTS:
 : 24
 
 有一些需要反复进行的复杂过程，写成循环的形式会很难受，比如寻路算法里的每个对象的每一次路径探索。显式循环是一个略有点落后的编程方法，现代很多编程语言都在刻意地弱化它，能不用显式循环的时候就尽量不用。
+* 参考资料
+- [[https://ai.google/research/pubs/pub62][MapReduce: Simplified Data Processing on Large Clusters]]

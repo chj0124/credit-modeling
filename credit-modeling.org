@@ -2,3 +2,4 @@
 
 * TODO Add: What is mathematic model ?
 * TODO Add: How deep is the nonlearity of sigmoid ?
+* TODO Add: Stepwise regression

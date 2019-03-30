@@ -1,6 +1,4 @@
 #+TITLE: 建模培训待办任务
 
-* TODO Prepare for SGDClassifier
-SCHEDULED: <2019-03-30 周六>
 * TODO Add: What is mathematic model ?
 * TODO Add: How deep is the nonlearity of sigmoid ?

@@ -7,10 +7,10 @@
 import numpy as np
 from numpy import ndarray
 
-data = np.array([1, 0.3, 0.7],
-                [0, -0.6, 0.3],
-                [0, -0.1, -0.8],
-                [1, 0.1, -0.45])
+data = np.array([[1,  0.3,  0.7],
+                 [0, -0.6,  0.3],
+                 [0, -0.1, -0.8],
+                 [1,  0.1, -0.45]])
 
 
 def sigmoid(x, derivative=False):

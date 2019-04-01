@@ -11,3 +11,5 @@
 * TODO 经验风险与结构风险
 机器学习中的目标函数、损失函数、代价函数有什么区别？ - zzanswer的回答 - 知乎
 https://www.zhihu.com/question/52398145/answer/209358209
+* TODO 给所有 SGDClassifier 的子类写一个统一的 train() 类方法
+* TODO 增加代码：损失函数能量够小的时候终止训练

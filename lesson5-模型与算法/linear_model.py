@@ -5,7 +5,6 @@
 """
 
 import numpy as np
-from numpy import ndarray
 
 data = np.array([[1,  0.3,  0.7],
                  [0, -0.6,  0.3],
@@ -20,19 +19,21 @@ def sigmoid(x, derivative=False):
     return sigm
 
 
-def mbe(y: ndarray, t: ndarray):
-    return (t - y) / len(t)
-
-
 class SGDClassifier(object):
-    def __init__(self, af=None, lf=None):
+    def __init__(self, beta=0.5, iteration=1000):
         # 偏置值恒为 1，对线性组合的结果的影响用偏置值对应的权值来调整
+        self.x = None
+        self.t = None
         self.b = 1
         self.weight = None
-        self._af = af
+        self.u = None
+        self.y = None
+        self.af = None
         self.af_name = None
-        self._lf = lf
+        self.lf = None
         self.lf_name = None
+        self.beta = beta
+        self.iteration = iteration
 
     def set_activation_function(self, name: str):
         # 可用的激活函数列表
@@ -43,50 +44,88 @@ class SGDClassifier(object):
 
         # 单位阶跃函数
         if name == 'heaviside':
-            self._af = lambda x: (x >= 0) * 1
+            self.af = lambda x: (x >= 0) * 1
 
         # 线性函数
         if name == 'linear':
-            self._af = lambda x: x
+            self.af = lambda x: x
 
         # 逻辑函数
         if name == 'sigmoid':
-            self._af = lambda x: sigmoid(x)
+            self.af = lambda x: sigmoid(x)
 
         # 错误
-        if self._af is None:
+        if self.af is None:
             raise UserWarning("此对象内没有内置叫" + name + "的激活函数哦\n",
                               "可用的激活函数有：" + str(af_list))
 
     def set_loss_function(self, name: str):
         # 可用的损失函数列表
-        lf_list = ['mbe']
+        lf_list = ['simple_minus']
 
-        # 平均偏差误差 mean bias error
-        if name == 'mbe':
-            self._lf = mbe
+        # 损失函数名字
+        self.lf_name = name
+
+        # 简单相减
+        if name == 'simple_minus':
+            self.lf = lambda t, y: t - y
 
         # 错误
-        if self._af is None:
+        if self.af is None:
             raise UserWarning("此对象内没有内置叫" + name + "的损失函数哦\n",
                               "可用的损失函数有：" + str(lf_list))
 
-    def get_data(self, x, y):
-        pass
+    def get_data(self, x, t):
+        self.x = x
+        self.t = t
+        # 随机初始化权值
+        self.weight = np.random.rand(x.shape[1])
 
     def linear_combine(self):
-        pass
+        self.u = np.dot(self.x, self.weight)
+        return self.u
+
+    def output(self):
+        self.y = self.af(np.dot(self.x, self.weight))
+        return self.y
 
     def train(self):
-        if (self._lf is None) or (self._af is None):
-            raise UserWarning("先设定损失函数与激活函数！")
+        if (self.lf is None) or (self.af is None):
+            raise UserWarning("未设定损失函数或激活函数！")
+        if (self.x is None) or (self.t is None):
+            raise UserWarning("模型未获取数据！")
 
 
 class Perceptron(SGDClassifier):
     def __init__(self):
-        super().__init__()
+        super(Perceptron, self).__init__()
         self.set_activation_function('heaviside')
 
-    def set_loss_function(self, name='simple minus'):
-        self.lf_name = name
-        self._lf = lambda t, y: t - y
+    # 全样本进行一轮训练
+    def train_one_gen(self):
+        for i in range(self.x.__len__()):
+            e = self.lf(self.t[i], self.output()[i])
+            self.weight += self.beta * e * self.x[i]
+
+    def train(self):
+        if (self.lf is None) or (self.af is None):
+            raise UserWarning("未设定损失函数或激活函数！")
+        if (self.x is None) or (self.t is None):
+            raise UserWarning("模型未获取数据！")
+
+
+if __name__ == "__main__":
+    # 使用对象
+    # 设定几个参数
+    lm = Perceptron()
+    lm.get_data(x=data[:, 1:3], t=data[:, 0])
+    lm.set_activation_function(name='heaviside')
+    lm.set_loss_function(name='simple_minus')
+
+    # 各个节点的输出值
+    lm.linear_combine()
+    lm.output()
+    lm.lf(lm.t, lm.output())
+
+    # 做一代训练
+    lm.train_one_gen()

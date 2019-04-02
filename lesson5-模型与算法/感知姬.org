@@ -141,10 +141,10 @@ w_i(new) = w_i(old) - \alpha\frac{\partial}{\partial{w_i}}J_w
 \begin{huge}
 \[
 \begin{split}
-\frac{\partial}{\partial{w_i}}J_w &= \frac{\partial}{\partial{w_i}} \frac{1}{2n} \sum_{i=0}^n (y-t)^2 \\
-&= 2 \cdot \frac{1}{2n} \sum_{i=0}^n (y-t) \frac{\partial}{\partial{w_i}} \sum_{i=0}^n (y-t) \\
-&= \frac{1}{n} \sum_{i=0}^n (y-t) \cdot \frac{\partial}{\partial{w_i}}(\sum_{i=0}^n w_ix_i - t) \\
-&= \frac{1}{n} \sum_{i=0}^n (y-t)x_i
+\frac{\partial}{\partial{w_i}}J_w &= \frac{\partial}{\partial{w_i}} \frac{1}{2n} \sum_{i=0}^n (y_i-t_i)^2 \\
+&= 2 \cdot \frac{1}{2n} \sum_{i=0}^n (y_i-t_i) \frac{\partial}{\partial{w_i}} \sum_{i=0}^n (y_i-t_i) \\
+&= \frac{1}{n} \sum_{i=0}^n (y_i-t_i) \cdot \frac{\partial}{\partial{w_i}}(\sum_{i=0}^n w_ix_i - t) \\
+&= \frac{1}{n} \sum_{i=0}^n (y_i-t_i)x_i
 \end{split}
 \] 
 \end{huge}

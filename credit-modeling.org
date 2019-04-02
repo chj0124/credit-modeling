@@ -25,3 +25,4 @@ https://www.zhihu.com/question/52398145/answer/209358209
 - 随机梯度下降 :: 感知机使用的就是这种方法，其实并没有加入随机元素
 - 动量梯度下降
 - mini-batch 梯度下降
+* TODO 分类与回归的本质区别

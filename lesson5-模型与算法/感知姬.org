@@ -15,7 +15,7 @@
 ** 输入与偏置值
 ** 权值向量
 ** 激活函数
-** 损失函数
+** 误差反馈
 * 训练过程
 ** 线性组合
 权值向量与输入样本做个简单的点积，得到结果 u
@@ -31,19 +31,124 @@ Error = E = t - y
 
 * 自己写一个感知机对象
 
-* 梯度下降
+* 推广：梯度下降
+** 线性回归的形式
+当权值向量为 w 时，一个线性回归模型的输出可以表示为：
+
+\begin{huge}
+\[
+f_w(x) = w0 + w_1x_1 + w_2x_2 + ... + w_nx_n
+\]
+\end{huge}
+
+在给特征集 x 加入一个常数列之后，上式可以表示为：
+
+\begin{huge}
+\[
+f_w(x) = w^Tx
+\]
+\end{huge}
+
+** 定义误差：损失函数
+针对某个特征集合 x，一个线性回归模型的输出为向量 y，y 中的每一个值和 x 中的每一个样本一一对应。而特征集合中的每一个样本同时也与一个目标向量 t 一一对应，那么就可以针对 t 和 y 来定义当 w 确定时，比如用 MSE(均方误差) 来定义这个模型的误差：
+
+\begin{huge}
+\[
+J_w = \frac{1}{2n}\sum_{i=1}^{n}(y_i - t_i)^2
+\]
+\end{huge}
+
+其中，$$ \frac{1}{n} $$ 只是用来归一化求和结果的，$$\frac{1}{2}$$ 是为了求导方便
+
+线性回归本质上是一个优化问题，优化的目标就是这个损失函数。
+
 ** 梯度下降为什么有效
 函数
 
+\begin{huge}
 \[
 f(x, y) = x^2 + y^2
 \]
+\end{huge}
 
 的梯度为：
 
+\begin{huge}
 \[
 \nabla{f} = (\frac{\partial{f}}{\partial{x}}, \frac{\partial{f}}{\partial{y}}) = (2x, 2y)
 \]
+\end{huge}
 
-损失函数 $$ S = f(w, b)$$ 的图像(即误差曲面)也是一个凹函数，因次权值和偏置值每一次训练的时候按照负梯度方向来更新可以使总误差减少得最快。
+该函数的图像：
+
+#+begin_src python :results file
+from matplotlib import pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure()
+ax = Axes3D(fig)
+X = np.arange(-4, 4, 0.25)
+Y = np.arange(-4, 4, 0.25)
+X, Y = np.meshgrid(X, Y)
+Z = np.sqrt(X**2 + Y**2)
+
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='rainbow')
+plt.savefig(r"./bowl.png")
+return(r"./bowl.png")
+#+end_src
+
+#+RESULTS:
+[[file:./bowl.png]]
+
+由于线性回归的所有信息都存储在权值向量与偏置值中，所以损失函数实际上可以表示成：
+
+\begin{huge}
+\[J = f(w, b)\] 
+\end{huge}
+
+或
+
+\begin{huge}
+\[J = f(w)\] 
+\end{huge}
+
+从 MSE 的表达式可以看出，这个损失函数的图像(即误差曲面)其实也是一个凹函数，因此权值和偏置值每一次训练的时候按照负梯度方向来更新可以使总误差减少得最快。
+
+** MSE 的梯度下降
+根据上一小节的结论，
+
+* 作业
+** 用梯度下降法，求下面这个函数的极小值的数值解(非符号解)
+
+\begin{huge}
+\[
+f(x) = x^2
+\]
+\end{huge}
+
+条件：x 的初始值为 10，手动或编程均可
+
+** :Python: 写一个线性回归对象
+- 踏实的人损失函数选择 MSE，不踏实的人选 LSE
+- 有偏置值 b，具体怎么处理它自己决定
+
+** :Python:开放问题: 波士顿房价数据集
+- 使用自己写的线性回归对象，对波士顿房价数据集做线性回归
+- 绘制损失函数的下降曲线
+
+** :预习: 求下面两个函数的一阶导数
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1 - e^{-x}}
+\]
+\end{huge}
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1 + e^{-x}}
+\]
+\end{huge}
+
 

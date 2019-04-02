@@ -1,14 +1,14 @@
 #+TITLE: 建模培训待添加内容
 
-* TODO Add: What is mathematic model ?
-* TODO Add: How deep is the nonlearity of sigmoid ?
-* TODO Add: Stepwise regression
-* TODO 即使完美的模型也无法完美地解决问题
-* TODO 总结五种损失函数
+* TODO Add: 什么是数学模型
+* TODO Add: sigmoid 的非线性有多强
+* TODO Add: 逐步回归
+* TODO ADD: 即使完美的模型也无法完美地解决问题
+* TODO ADD: 总结五种损失函数
 - [[https://www.jiqizhixin.com/articles/2018-06-21-3][5个回归损失函数]]
 - [[https://www.jiqizhixin.com/articles/091202][几种常用的损失函数]]
 
-* TODO 经验风险与结构风险
+* TODO ADD: 经验风险与结构风险
 机器学习中的目标函数、损失函数、代价函数有什么区别？ - zzanswer的回答 - 知乎
 https://www.zhihu.com/question/52398145/answer/209358209
 * TODO 代码：给所有 SGDClassifier 的子类写一个统一的 train() 类方法

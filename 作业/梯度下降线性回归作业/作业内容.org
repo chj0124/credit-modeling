@@ -1,0 +1,50 @@
+#+TITLE: 线性回归(梯度下降)作业
+
+* 用梯度下降法，求下面这个函数的极小值的数值解(非符号解)
+
+\begin{huge}
+\[
+f(x) = x^2
+\]
+\end{huge}
+
+条件：x 的初始值为 10，手动或编程均可
+
+* :Python: 写一个线性回归对象
+- 踏实的人损失函数选择 MSE，不踏实的人选 LSE
+- 要求有偏置值 b，具体怎么处理它，由自己决定
+
+* :Python:开放问题: 波士顿房价数据集
+- 使用自己写的线性回归对象，对波士顿房价数据集做线性回归
+- 绘制损失函数的下降曲线
+
+在 scikit-learn 这个包里有一些内置的经典数据集，包括波士顿房价数据集，可以直接调用：
+#+begin_src python
+import pandas as pd
+from sklearn.datasets import load_boston
+
+# 这里得到的是 scikit-learn 中的 Bunch 对象
+boston = load_boston()
+
+# 特征集与目标变量
+x = pd.DataFrame(data=boston.data, columns=boston.feature_names)
+y = boston.target
+
+# 对这个数据集的文字描述
+print(boston.DESCR)
+#+end_src
+  
+* :预习: 求下面两个函数的一阶导数
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1 - e^{-x}}
+\]
+\end{huge}
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1 + e^{-x}}
+\]
+\end{huge}
+

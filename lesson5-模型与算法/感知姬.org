@@ -161,17 +161,6 @@ w_i(new) = w_i(old) - \frac{1}{n} \cdot \alpha \sum_{i=0}^n (y_i-t_i) x_i
 \] 
 \end{huge}
 
-** 向量形式的权值更新公式
-上面的公式是针对单个权重的更新公式，也可以将其写成针对整个权值向量的形式：
-
-\begin{huge}
-\[
-w_{new} = w_{old} - \alpha \frac{(y-t)_{sum}}{n} \cdot x
-\] 
-\end{huge}
-
-此公式可在针对所有样本的单轮训练中使用。
-
 * 作业
 ** 用梯度下降法，求下面这个函数的极小值的数值解(非符号解)
 

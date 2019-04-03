@@ -41,7 +41,7 @@ Error = E = t - y
 
 \begin{huge}
 \[
-f_w(x) = w0 + w_1x_1 + w_2x_2 + ... + w_nx_n
+f_w(x) = w_0 + w_1x_1 + w_2x_2 + ... + w_nx_n
 \]
 \end{huge}
 

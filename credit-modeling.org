@@ -1,35 +1,40 @@
-#+TITLE: 建模玄学问题
+#+TITLE: 待添加内容
+#+TAGS: new_file(f) add(a) reference(r) code(c)
 
-* DONE Add: 什么是数学模型
+* TODO 井外的世界                                                  :new_file:
+** DONE 什么是数学模型
 CLOSED: [2019-04-03 周三 17:20]
 模型就是变量之间的关系
-* DONE 极小值
+* TODO 玄学问题.org                                                :new_file:
+** DONE 极小值
 CLOSED: [2019-04-02 周二 18:04]
 这个内容归纳到什么地方？
 
 至少对线性模型来说，从损失函数这个凹函数就可以看出来，根本不存在什么局部最小值，可以放心地使用梯度下降法，唯一需要担心的是不同的学习率带来的效率和精度的问题。
 
 对于复杂的模型，可以通过概率方式证明，那些各个一阶导数全为 0 的点，二阶导数全大于 0 的概率是极低的，也就是说在误差曲面上鞍点很多，局部最小值极少。
-* TODO Add: sigmoid 的非线性有多强
-* TODO Add: 逐步回归
-* TODO ADD: 即使完美的模型也无法完美地解决问题
-* TODO ADD: 总结五种损失函数
+* TODO 特征工程.org                                                :new_file:
+- vif
+* TODO sigmoid 带来了多强的非线性表达能力                               :add:
+* TODO 逐步回归                                                         :add:
+* TODO 即使完美的模型也无法完美地解决问题                               :add:
+* TODO 总结五种损失函数                                                 :add:
 - [[https://www.jiqizhixin.com/articles/2018-06-21-3][5个回归损失函数]]
 - [[https://www.jiqizhixin.com/articles/091202][几种常用的损失函数]]
 
-* TODO ADD: 经验风险与结构风险
+* TODO 经验风险与结构风险                                               :add:
 机器学习中的目标函数、损失函数、代价函数有什么区别？ - zzanswer的回答 - 知乎
 https://www.zhihu.com/question/52398145/answer/209358209
-* TODO 代码：给所有 SGDClassifier 的子类写一个统一的 train() 类方法
-* TODO 代码：损失函数能量够小的时候终止训练
-* TODO 代码：增加偏置值
-* TODO 梯度下降的变体
+* TODO 给所有 SGDClassifier 的子类写一个统一的 train() 类方法          :code:
+* TODO 损失函数能量够小的时候终止训练                                  :code:
+* TODO 增加偏置值                                                      :code:
+* TODO 梯度下降的变体                                                   :add:
 - 批量梯度下降
 - 随机梯度下降 :: 感知机使用的就是这种方法，其实并没有加入随机元素
 - 动量梯度下降
 - mini-batch 梯度下降
-* TODO 分类与回归的本质区别
-* TODO ADD: 随机误差项与回归的假设
+* TODO 分类与回归的本质区别                                             :add:
+* TODO 随机误差项与回归的假设                                           :add:
 ** Linearity 线性
 应变量和每个自变量都是线性关系。
 ** Indpendence 独立性
@@ -40,3 +45,6 @@ https://www.zhihu.com/question/52398145/answer/209358209
 所有的误差项具有同样方差。
 
 这四个假设的首字母，合起来就是 LINE
+* TODO 对线性回归效果的评价                                             :add:
+- R2
+* TODO Scott Menard's book                                        :reference:

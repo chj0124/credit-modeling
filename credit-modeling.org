@@ -25,9 +25,6 @@ CLOSED: [2019-04-02 周二 18:04]
 * TODO 经验风险与结构风险                                               :add:
 机器学习中的目标函数、损失函数、代价函数有什么区别？ - zzanswer的回答 - 知乎
 https://www.zhihu.com/question/52398145/answer/209358209
-* TODO 给所有 SGDClassifier 的子类写一个统一的 train() 类方法          :code:
-* TODO 损失函数能量够小的时候终止训练                                  :code:
-* TODO 增加偏置值                                                      :code:
 * TODO 梯度下降的变体                                                   :add:
 - 批量梯度下降
 - 随机梯度下降 :: 感知机使用的就是这种方法，其实并没有加入随机元素
@@ -47,4 +44,12 @@ https://www.zhihu.com/question/52398145/answer/209358209
 这四个假设的首字母，合起来就是 LINE
 * TODO 对线性回归效果的评价                                             :add:
 - R2
+* TODO LMS 算法                                                         :add:
+* TODO 最小二乘的时间复杂度                                             :add:
+o(n^3)
+
+若特征数大于 10，最小二乘在速度上就不如梯度下降
+* TODO 增加偏置值                                                      :code:
+* TODO 给所有 SGDClassifier 的子类写一个统一的 train() 类方法          :code:
+* TODO 损失函数能量够小的时候终止训练                                  :code:
 * TODO Scott Menard's book                                        :reference:

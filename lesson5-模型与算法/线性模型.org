@@ -1,26 +1,25 @@
 #+TITLE: 线性模型
 
-* 分类器
-** 输出离散值就是分类？输出连续值就是回归？
-** 分类与回归
-* 学习感知机这个简陋模型的意义
+* 简单的感知机(perceptron)
 ** 初识分类器
+** 感知机结构
+*** 输入与偏置值
+*** 权值向量
+*** 激活函数
+*** 误差反馈
 ** Hebbian 原则
-*** SGD
+*** 权值更新
 *** 不均衡样本
-* 一个简单数据集
+** 一个简单数据集
+|-------+--------+---|
 | x1    | x2     | t |
 |-------+--------+---|
 | 0.3   | 0.7    | 1 |
 | - 0.6 | 0.3    | 0 |
 | - 0.1 | - 0.8  | 0 |
 | 0.1   | - 0.45 | 1 |
-* 感知机结构
-** 输入与偏置值
-** 权值向量
-** 激活函数
-** 误差反馈
-* 训练过程
+|-------+--------+---|
+* 感知机的训练过程
 ** 线性组合
 权值向量与输入样本做个简单的点积，得到结果 u
 ** 激活函数
@@ -33,7 +32,7 @@ Error = E = t - y
 ** 权值往误差减小的方向移动
 ~为什么误差定义为 t - y 而不是 y - t 呢？~
 
-* 推广：梯度下降求解线性回归
+* 梯度下降求解线性回归(linear regression)
 ** 线性回归的形式
 当权值向量为 w 时，一个线性回归模型的输出可以表示为：
 
@@ -158,3 +157,57 @@ w_i(new) = w_i(old) - \alpha\frac{\partial}{\partial{w_i}}J_w
 w_i(new) = w_i(old) - \frac{1}{n} \cdot \alpha \sum_{i=0}^n (y_i-t_i) x_i
 \] 
 \end{huge}
+* 梯度下降求解逻辑回归(logistic regression)
+** 逻辑回归的用途
+和感知机一样，逻辑回归要解决的也是用 0-1 编码的二分类问题，但是在感知机的基础上使用了更细腻的激活函数，这使得逻辑回归可以输出某个样本的分类概率：
+
+\begin{huge}
+\[
+
+P_{(i)} = P(x \in i | x) \\
+
+i = \left\{ 0, 1 \right\}
+
+\] 
+\end{huge}
+
+** sigmoid 激活函数
+
+逻辑回归在结构上与感知机和线性回归相同，损失函数的选择也可以与线性回归相同，不同之处在于，逻辑回归的激活函数换成了下面这个函数：
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1+e^{-x}}
+\] 
+\end{huge}
+
+皮埃尔·弗朗索瓦·韦吕勒在 1844 或 1845 年在研究它与人口增长的关系时将它命名为逻辑函数，在机器学习领域一般称它为 sigmoid 函数(意为：S 型的)。
+
+#+begin_src ipython :ipyfile ./sigmoid.png :results raw drawer
+# %matplotlib inline is a necessary setting
+%matplotlib inline
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def sigmoid(x, derivative=False):
+    sigm = 1. / (1. + np.exp(-x))
+    if derivative:
+        return sigm * (1. - sigm)
+    return sigm
+
+
+x = np.linspace(-10, 10, 1000)
+y = sigmoid(x)
+plt.grid()
+plt.plot(x, y)
+plt.show()
+#+end_src
+
+#+RESULTS:
+:results:
+# Out[5]:
+[[file:./sigmoid.png]]
+:end:
+
+** 权值更新

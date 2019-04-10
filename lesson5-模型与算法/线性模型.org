@@ -1,0 +1,257 @@
+#+TITLE: 线性模型
+
+* 简单的感知机(perceptron)
+** 初识分类器
+** 感知机结构
+*** 输入与偏置值
+*** 权值向量
+*** 激活函数
+*** 误差反馈
+** Hebbian 原则
+*** 权值更新
+*** 不均衡样本
+** 一个简单数据集
+|-------+--------+---|
+| x1    | x2     | t |
+|-------+--------+---|
+| 0.3   | 0.7    | 1 |
+| - 0.6 | 0.3    | 0 |
+| - 0.1 | - 0.8  | 0 |
+| 0.1   | - 0.45 | 1 |
+|-------+--------+---|
+* 感知机的训练过程
+** 线性组合
+权值向量与输入样本做个简单的点积，得到结果 u
+** 激活函数
+u 进入激活函数 f，得到感知机输出 y = f(u)
+** 计算误差
+计算感知机输出 y 与真实值 t 的误差:
+
+Error = E = t - y
+
+** 权值往误差减小的方向移动
+~为什么误差定义为 t - y 而不是 y - t 呢？~
+
+* 梯度下降求解线性回归(linear regression)
+** 线性回归的形式
+当权值向量为 w 时，一个线性回归模型的输出可以表示为：
+
+\begin{huge}
+\[
+f_w(x) = w_0 + w_1x_1 + w_2x_2 + ... + w_nx_n
+\]
+\end{huge}
+
+在给特征集 x 加入一个常数特征之后，上式可以表示为：
+
+\begin{huge}
+\[
+f_w(x) = w^Tx
+\]
+\end{huge}
+
+只从模型结构上看，一个线性回归模型相当于把感知机的激活函数从单位阶跃函数换成了 y=x 这个函数。
+
+** 定义误差：损失函数
+针对某个特征集合 x，一个线性回归模型的输出为向量 y，y 中的每一个值和 x 中的每一个样本一一对应。而特征集合中的每一个样本同时也与一个目标向量 t 一一对应，那么就可以针对 t 和 y 来定义当 w 确定时这个模型的误差，比如用 MSE(均方误差) 来表示：
+
+\begin{huge}
+\[
+J_w = \frac{1}{2n}\sum_{i=1}^{n}(y_i - t_i)^2
+\]
+\end{huge}
+
+其中，$$\frac{1}{2}$$ 是为了求导方便，$$ \frac{1}{n} $$ 只是用来归一化求和结果的，在后面的计算过程中，$$ \frac{1}{n} $$ 会使结果变得过小，所以根据实际情况也可以省略。
+
+用来反映模型的误差的函数就被称为损失函数(或代价函数)，线性回归本质上是一个优化问题，优化的目标就是这个损失函数。
+
+** 梯度下降
+函数
+
+\begin{huge}
+\[
+f(x, y) = x^2 + y^2
+\]
+\end{huge}
+
+的梯度为：
+
+\begin{huge}
+\[
+\nabla{f} = (\frac{\partial{f}}{\partial{x}}, \frac{\partial{f}}{\partial{y}}) = (2x, 2y)
+\]
+\end{huge}
+
+该函数的图像：
+
+#+begin_src python :results file
+from matplotlib import pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure()
+ax = Axes3D(fig)
+X = np.arange(-4, 4, 0.25)
+Y = np.arange(-4, 4, 0.25)
+X, Y = np.meshgrid(X, Y)
+Z = np.sqrt(X**2 + Y**2)
+
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='rainbow')
+plt.savefig(r"./bowl.png")
+return(r"./bowl.png")
+#+end_src
+
+#+RESULTS:
+[[file:./bowl.png]]
+
+这个函数是一个凹函数，在求出它的梯度表达式之后，如果在曲面上投点并记为 P，就可以让 P 按照梯度的反方向修改自己的坐标，直到 P 到达曲面的最低点。
+
+由于线性回归的所有信息都存储在权值向量与偏置值中，所以损失函数实际上可以表示成：
+
+\begin{huge}
+\[J = f(w, b)\] 
+\end{huge}
+
+或
+
+\begin{huge}
+\[J = f(w)\] 
+\end{huge}
+
+从 MSE 的表达式可以看出， *对于单个样本来说，* 误差曲面的图像其实也是一个关于权值向量各个分量的凹函数，并且它也连续可导、导数形式简单，因此权值和偏置值每一次训练的时候按照负梯度方向来更新可以使总误差沿着减小最快的方向减小，直到达到极小值。
+
+** 梯度下降
+
+既然损失函数可以用这样的方式来求极小值，只要按照梯度的反方向来更新权值，就能得到一个损失函数最小、也就是误差最小的线性回归模型。
+
+也就是说，在使用梯度下降方法训练一个线性回归模型时，每次训练时权值的更新按照以下公式进行：
+
+\begin{huge}
+\[
+w_i(new) = w_i(old) - \alpha\frac{\partial}{\partial{w_i}}J_w
+\] 
+\end{huge}
+
+\begin{huge}
+\[
+\alpha : leaning-rate
+\] 
+\end{huge}
+
+
+** 单样本梯度下降(LMS 算法)
+
+尽管线性回归模型追求的是所有样本的总误差最小，但我们依然可以使用和感知机一样的 LMS 算法(每输入一个样本就更新一次权值)来更新权值，严格来说这并不是梯度下降。用单个样本的输出与真实值产生的误差 E 来对权值向量 w 的某一个分量求偏导，可以得到：
+
+\begin{huge}
+\[
+\begin{split}
+\frac{\partial}{\partial{w_i}}E_w &= \frac{\partial}{\partial{w_i}} \frac{1}{2} (y-t)^2 \\
+&= (y-t)x_i \\
+\end{split}
+\] 
+\end{huge}
+
+将这个结果带入权值更新公式，可以得到：
+
+\begin{huge}
+\[
+w_i(new) = w_i(old) - \alpha(y-t)x_i
+\] 
+\end{huge}
+
+** 批量梯度下降(batch gradient descent)
+
+正经的梯度下降方法需要考虑到所有样本的总误差，那么总误差对每个权值求偏导就能得到我们需要的梯度，如果损失函数是平方误差，对权值向量的某个分量的偏导结果为：
+
+\begin{huge}
+\[
+\begin{split}
+\frac{\partial}{\partial{w_i}}J_w &= \frac{\partial}{\partial{w_i}} \frac{1}{2N} \sum_{j=0}^N (y_j-t_j)^2 \\
+&= \frac{1}{2} \cdot \frac{\partial}{\partial w_i} [ (y_1-t_1)^2 + (y_2-t_2)^2 + ... + (y_N-t_N)^2] \\
+&= \frac{1}{2} \sum_{j=0}^N [ 2 (y_j-t_j) x^{(j)}_i ] \\
+&= \sum_{j=0}^N [ (y^{(j)}-t^{(j)}) x^{(j)}_i ] \\
+\end{split}
+\] 
+\end{huge}
+
+所以权值的更新公式可以写成：
+
+\begin{huge}
+\[
+w_i(new) = w_i(old) - \alpha \sum_{j=0}^N [ (y^{(j)}-t^{(j)}) x^{(j)}_i ]
+\] 
+\end{huge}
+
+* 梯度下降求解逻辑回归(logistic regression)
+** 逻辑回归的用途
+和感知机一样，逻辑回归要解决的也是用 0-1 来对目标类别进行编码的二分类问题，但是在感知机的基础上使用了更细腻的激活函数，这使得逻辑回归可以输出某个样本的分类概率：
+
+\begin{huge}
+\[
+
+P_{(i)} = P(x \in i | x) \\
+
+i = \left\{ 0, 1 \right\}
+
+\] 
+\end{huge}
+
+** sigmoid 激活函数
+
+逻辑回归的主体结构与感知机和线性回归差不多，损失函数的选择也可以与线性回归相同，不同之处在于，逻辑回归的激活函数换成了下面这个函数：
+
+\begin{huge}
+\[
+f(x) = \frac{1}{1+e^{-x}}
+\] 
+\end{huge}
+
+皮埃尔·弗朗索瓦·韦吕勒在 1845 年在研究它与人口增长的关系时将它命名为逻辑函数，在机器学习领域一般称它为 sigmoid 函数(意为：S 型的)。
+
+#+begin_src ipython :ipyfile ./sigmoid.png :results raw drawer
+# %matplotlib inline is a necessary setting
+%matplotlib inline
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def sigmoid(x, derivative=False):
+    sigm = 1. / (1. + np.exp(-x))
+    if derivative:
+        return sigm * (1. - sigm)
+    return sigm
+
+
+x = np.linspace(-10, 10, 1000)
+y = sigmoid(x)
+plt.grid()
+plt.plot(x, y)
+plt.show()
+#+end_src
+
+#+RESULTS:
+:results:
+# Out[5]:
+[[file:./sigmoid.png]]
+:end:
+
+** 分类问题转换为回归问题
+
+** 权值更新
+在使用梯度下降来训练一个逻辑回归模型时，权值的更新依然按照下面的公式进行：
+
+\begin{huge}
+\[
+w_i(new) = w_i(old) - \alpha\frac{\partial}{\partial{w_i}}J_w
+\] 
+\end{huge}
+
+\begin{huge}
+\[
+\alpha : leaning-rate
+\] 
+\end{huge}
+
+在损失函数选择 MSE 时，损失函数对权值的偏导为：
+

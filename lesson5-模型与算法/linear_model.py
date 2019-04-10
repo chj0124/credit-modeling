@@ -5,11 +5,34 @@
 """
 
 import numpy as np
+import pandas as pd
+from sklearn.datasets import load_boston
 
+# 波士顿房价数据集
+boston = load_boston()
+boston_x = pd.DataFrame(data=boston.data, columns=boston.feature_names)
+boston_y = boston.target
+
+# 感知机使用数据
 data = np.array([[1,  0.3,  0.7],
                  [0, -0.6,  0.3],
                  [0, -0.1, -0.8],
                  [1,  0.1, -0.45]])
+
+
+def mse(y, t):
+    """
+    MSE 损失函数
+
+    Param
+    -----
+    y: array-like, 模型输出
+    t: array-like，真实值
+    return: 总误差值
+    """
+    y = np.array(y)
+    t = np.array(t)
+    return ((y-t)**2).mean()
 
 
 def sigmoid(x, derivative=False):
@@ -61,7 +84,7 @@ class SGDClassifier(object):
 
     def set_loss_function(self, name: str):
         # 可用的损失函数列表
-        lf_list = ['simple_minus']
+        lf_list = ['simple_minus', 'mse']
 
         # 损失函数名字
         self.lf_name = name
@@ -69,6 +92,10 @@ class SGDClassifier(object):
         # 简单相减
         if name == 'simple_minus':
             self.lf = lambda t, y: t - y
+
+        # mse
+        if name == 'mse':
+            self.lf = mse
 
         # 错误
         if self.af is None:
@@ -114,9 +141,11 @@ class Perceptron(SGDClassifier):
             raise UserWarning("模型未获取数据！")
 
 
-if __name__ == "__main__":
-    # 使用对象
-    # 设定几个参数
+# 选择要运行的代码块
+model_type = None
+
+if model_type == "perceptron":
+    # 设定参数
     lm = Perceptron()
     lm.get_data(x=data[:, 1:3], t=data[:, 0])
     lm.set_activation_function(name='heaviside')

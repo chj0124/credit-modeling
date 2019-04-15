@@ -1,6 +1,7 @@
 #+TITLE: 待添加内容
-#+TAGS: new_file(f) add(a) reference(r) code(c)
+#+TAGS: new_file(f) add(a) reference(r) code(c) script(s)
 
+* TODO 只要懂得编程，你就能用这个技能去学习其它的内容                :script:
 * TODO 井外的世界                                                  :new_file:
 ** DONE 什么是数学模型
 CLOSED: [2019-04-03 周三 17:20]

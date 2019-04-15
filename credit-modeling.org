@@ -52,7 +52,7 @@ https://www.zhihu.com/question/52398145/answer/209358209
 ** Indpendence 独立性
 对于所有的观测值，它们的误差项相互之间是独立的。
 ** Normality 正态性
-误差项 (y - t) 服从正态分布。
+误差项 (y - t) 服从正态分布。(中心极限定理)
 ** Equal-variance 等方差
 所有的误差项具有同样方差。
 

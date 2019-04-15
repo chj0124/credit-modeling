@@ -207,7 +207,7 @@ P(Y | X = x)
 
 线性回归以及 OLS 方法也可以强行用来做这样的二分类，但会陷入模型输出超过 [0, 1] 范围的困境。
 
-** sigmoid 的由来
+** 为什么使用 sigmoid 函数
 *** Odds 发生比
 
 如果以 0-1 来表示二分类问题的类别，并将它看做可度量的值来做线性回归的话，模型的形式会是下面这样：
@@ -228,11 +228,45 @@ w^Tx = \frac{p}{1 - p}
 
 来看一下当 p 的范围是 [0, 1] 时，$$\frac{p}{1 - p}$$ 的取值情况：
 
-[[file:./fake-logit.png]]
+#+begin_src ipython :ipyfile ./beinglogit.png :results raw drawer
+# %matplotlib inline is a necessary setting
+%matplotlib inline
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0.01, 0.99, 1000)
+y = x / (1 - x)
+plt.grid()
+plt.plot(x, y)
+plt.show()
+#+end_src
+
+#+RESULTS:
+:results:
+# Out[21]:
+[[file:./beinglogit.png]]
+:end:
 
 这样的取值量纲严重地不利于回归，对它取对数试试：
 
+#+begin_src ipython :ipyfile ./logit.png :results raw drawer
+# %matplotlib inline is a necessary setting
+%matplotlib inline
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0.01, 0.99, 1000)
+y = np.log(x / (1 - x))
+plt.grid()
+plt.plot(x, y)
+plt.show()
+#+end_src
+
+#+RESULTS:
+:results:
+# Out[20]:
 [[file:./logit.png]]
+:end:
 
 上面这个函数被称作 logit 函数，我们现在可以直接用它来作为线性模型的目标：
 
@@ -260,6 +294,7 @@ p = \frac{1}{1 + e^{-w^Tx}} = sigmoid(w^Tx)
 
 这就是 sigmoid 函数
 
+*** [超纲] 人口增长微分方程中的 sigmoid 函数
 *** [严重超纲] 最大熵模型的二分类形式
 ** sigmoid 的性质
 
@@ -302,7 +337,7 @@ plt.show()
 
 由于使用了这个激活函数，模型的输出范围被限制在 (0, 1)，这样在解决 0-1 编码的二分类问题的时候，不会再像直接使用线性回归那样遇到输出过大的问题。
 
-** 损失函数(cross entropy, CE)
+** 损失函数
 
 线性回归模型中，一般用这种形式的损失函数来衡量总误差：
 
@@ -374,7 +409,7 @@ J_w = - \sum_{i=1}^n t^{(i)}ln(y^{(i)}) + (1 - t^{(i)})ln(1 - y^{(i)})
 
 ** 权值更新
 
-在使用梯度下降来训练一个逻辑回归模型时，权值的更新依然按照下面的公式进行：
+在使用梯度下降来训练一个逻辑回归模型时，权值的更新依然按照下面的原则进行：
 
 \begin{huge}
 \[
@@ -385,6 +420,30 @@ w_i(new) = w_i(old) - \alpha\frac{\partial}{\partial{w_i}}J_w
 \begin{huge}
 \[
 \alpha : leaning-rate
+\] 
+\end{huge}
+
+虽然损失函数已经变化了，但是损失函数对权值的某一分量求偏导的结果形式依然与线性回归相同。
+
+单个样本的误差：
+
+\begin{huge}
+\[
+\begin{split}
+\frac{\partial}{\partial{w_i}}E_w &= \frac{\partial}{\partial{w_i}}[tln(y) + (1 - t)ln(1 - y)] \\
+&= (y-t)x_i \\
+\end{split}
+\] 
+\end{huge}
+
+总误差：
+
+\begin{huge}
+\[
+\begin{split}
+\frac{\partial}{\partial{w_i}}J_w &= - \frac{\partial}{\partial{w_i}} \sum_{j=0}^N  [ t^{(j)}ln(y^{(j)}) + (1 - t^{(j)})ln(1 - y^{(j)}) ] \\
+&= \sum_{j=0}^N [ (y^{(j)}-t^{(j)}) x^{(j)}_i ] \\
+\end{split}
 \] 
 \end{huge}
 

@@ -1,14 +1,17 @@
 #+TITLE: 待添加内容
 #+TAGS: new_file(f) add(a) reference(r) code(c) script(s)
 
-* TODO 只要懂得编程，你就能用这个技能去学习其它的内容                :script:
-* TODO 井外的世界                                                  :new_file:
+* DONE 只要懂得编程，你就能用这个技能去学习其它的内容                :script:
+CLOSED: [2019-04-16 周二 17:52]
+* DONE 井外的世界                                                  :new_file:
+CLOSED: [2019-04-16 周二 17:55]
 ** DONE 什么是数学模型
 CLOSED: [2019-04-03 周三 17:20]
 模型就是变量之间的关系
 ** TODO 不同行业的数据分析
 * TODO 玄学问题.org                                                :new_file:
-** TODO 过拟合
+** DONE 过拟合
+CLOSED: [2019-04-16 周二 17:52]
 凡是在有限数据集上追求最小误差就是过拟合
 ** TODO 硬阈值模型与软阈值模型
 ** DONE 极小值
@@ -27,7 +30,6 @@ CLOSED: [2019-04-02 周二 18:04]
 - 卷积层
 - 主成分降维
 - MLP
-
 ** 判别模型中的单变量陷阱
 例子：两个布尔变量的联合概率分布
 * TODO sigmoid 带来了多强的非线性表达能力                               :add:

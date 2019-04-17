@@ -46,25 +46,4 @@ print(cancer.DESCR)
 - 模型的输出为剔除噪声后的时间序列数据，绘制输出数据的图像
 - 当一整天的股票时间序列数据都传入模型后，该模型可以对第二天开盘一段时间后的数据进行预测(尽管预测这个数据没有什么实际意义)
 
-下面这段代码中的 hacked_data 为需要处理的时间序列数据，自己运行产生，不要设定随机种子。  
-
-#+BEGIN_SRC ipython :ipyfile ./curve.png :results raw drawer
-%matplotlib inline
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-
-t = np.linspace(9, 11, 1000)
-hacked_data = np.sin(2.5 * x)
-noise = 0.3 * np.random.randn(1000)
-hacked_data += noise
-
-plt.plot(t, hacked_data)
-plt.show()
-#+END_SRC
-
-#+RESULTS:
-:results:
-# Out[28]:
-[[file:./curve.png]]
-:end:
+使用 numpy.loadtxt() 读取数据文件

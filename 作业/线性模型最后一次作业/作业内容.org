@@ -48,7 +48,7 @@ print(cancer.DESCR)
 
 下面这段代码中的 hacked_data 为需要处理的时间序列数据，自己运行产生，不要设定随机种子。  
 
-#+BEGIN_SRC ipython :ipyfile ./obipy/curve.png :results raw drawer
+#+BEGIN_SRC ipython :ipyfile ./curve.png :results raw drawer
 %matplotlib inline
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -65,6 +65,6 @@ plt.show()
 
 #+RESULTS:
 :results:
-# Out[27]:
-[[file:./obipy/curve.png]]
+# Out[28]:
+[[file:./curve.png]]
 :end:

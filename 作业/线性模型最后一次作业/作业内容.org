@@ -1,0 +1,70 @@
+#+TITLE: 线性模型最后一次作业
+
+* [最省力的一次作业] 逻辑回归对象
+将上次的线性模型对象修改为逻辑回归对象，对乳腺癌数据集做逻辑回归，对结果进行探索。
+
+调用 scikit-learn 自带的数据集：
+
+#+begin_src ipython :results raw drawer
+import pandas as pd
+from sklearn.datasets import load_breast_cancer
+
+# 这里得到的是 scikit-learn 中的 Bunch 对象
+cancer = load_breast_cancer()
+
+# 特征集与目标变量
+x = pd.DataFrame(data=cancer.data, columns=cancer.feature_names)
+y = cancer.target
+
+# 对这个数据集的文字描述
+print(cancer.DESCR)
+#+end_src
+
+#+RESULTS:
+:results:
+# Out[7]:
+:end:
+
+* 再次拟合 Boston 房价数据
+使用一个 *激活函数是 sigmoid 函数* 的线性模型去拟合 Boston 房价数据
+
+* 使用最大似然估计推导出线性回归的损失函数
+提示：使用残差的正态假设
+
+* 写一个线性模型对象
+- 要求该对象的超参数可在调用时赋值
+- 目前只使用梯度下降方法即可
+- 要求该对象激活函数和损失函数可替换
+- 通过替换该对象的损失函数和激活函数，可以完成线性回归与逻辑回归
+
+* 时间序列数据流的自适应学习模型
+
+某王姓股民的股票交易软件被某心理不平衡的孙姓股民雇佣黑客动了手脚，每天显示的实时股票数据现在被加上了一个随机噪声，现在他雇佣了你来帮助他解决黑客的影响，请设计一个模型，完成以下任务：
+
+- 对给定的一组股票时间序列数据，建立模型
+- 时间序列数据流按顺序进入模型。股票交易讲究时效性，所以该模型必须在有数据传入后立刻产生对应的输出，不能在全部数据都传入后才开始输出。当然，也不能在所有数据都传入之后才开始做真正的计算。为了尽快得到正确的股票实时数据情况，模型收敛的速度必须要快。
+- 模型的输出为剔除噪声后的时间序列数据，绘制输出数据的图像
+- 当一整天的股票时间序列数据都传入模型后，该模型可以对第二天开盘一段时间后的数据进行预测
+
+下面这段代码中的 hacked_data 为需要处理的时间序列数据，自己运行产生，不要设定随机种子。  
+
+#+BEGIN_SRC ipython :ipyfile ./obipy/curve.png :results raw drawer
+%matplotlib inline
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+t = np.linspace(9, 11, 1000)
+hacked_data = np.sin(2.5 * x)
+noise = 0.3 * np.random.randn(1000)
+hacked_data += noise
+
+plt.plot(t, hacked_data)
+plt.show()
+#+END_SRC
+
+#+RESULTS:
+:results:
+# Out[27]:
+[[file:./obipy/curve.png]]
+:end:

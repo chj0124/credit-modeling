@@ -245,7 +245,7 @@ w^Tx = \frac{p}{1 - p}
 \] 
 \end{huge}
 
-来看一下当 p 的范围是 [0, 1] 时，$$\frac{p}{1 - p}$$ 的取值情况：
+$$\frac{p}{1 - p}$$ 被称为 odds 发生比，来看一下当 p 的范围是 [0, 1] 时，odds 的取值情况：
 
 #+begin_src ipython :ipyfile ./beinglogit.png :results raw drawer
 # %matplotlib inline is a necessary setting

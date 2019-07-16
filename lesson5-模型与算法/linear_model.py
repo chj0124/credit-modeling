@@ -10,8 +10,8 @@ from sklearn.datasets import load_boston
 
 # 波士顿房价数据集
 boston = load_boston()
-boston_x = pd.DataFrame(data=boston.data, columns=boston.feature_names)
-boston_y = boston.target
+boston_x = pd.DataFrame(data=boston['data'], columns=boston['feature_names'])
+boston_y = boston['target']
 
 # 感知机使用数据
 data = np.array([[1,  0.3,  0.7],

@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 
 
 class Perceptron(object):
+    """
+    感知机对象
+    """
     def __init__(self, learning_rate=0.7, n_iter=100):
         self.learning_rate = learning_rate
         self.iterations = n_iter
